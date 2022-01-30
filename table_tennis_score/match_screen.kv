@@ -1,0 +1,168 @@
+# Copyright (c) 2022 Maciej Dems
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+#:import match_screen table_tennis_score.match_screen
+
+
+<ScoreButton>:
+    MDBoxLayout:
+        orientation: 'vertical'
+        x: root.x
+        y: root.y
+        width: root.width
+        height: root.height
+        RelativeLayout:
+            id: topbar
+            width: root.width
+            height: 0.20 * root.height
+            size_hint: 1, None
+            valign: 'top'
+            MDIcon:
+                id: sets
+                icon: 'numeric-0-circle-outline'
+                font_size: self.height
+                valign: 'top'
+                theme_text_color: 'Custom'
+                text_color: root.foreground
+                size_hint: None, 1
+                width: self.height
+                height: 0.20 * root.height
+                x: 0 if root.position != 'right' else (root.width - self.width)
+                y: 0
+            MDIcon:
+                icon: 'tennis-ball'
+                font_size: self.height
+                theme_text_color: 'Custom'
+                text_color: root.foreground[:3] + [1 if root.serving else 0]
+                size_hint: None, 1
+                width: self.height
+                height: 0.20 * root.height
+                x: (root.width - self.width) if root.position != 'right' else 0
+                y: 0
+        Label:
+            text: root.points
+            font_size: self.height
+            font_name: root.font_name if root.font_name is not None else self.font_name
+            theme_text_color: 'Custom'
+            color: root.foreground
+            halign: 'center'
+            bold: True
+            size_hint: None, None
+            width: root.width
+            height: 0.55 * root.height
+            shorten: True
+            shorten_from: "right"
+        Label:
+            text: root.player_name
+            font_size: self.height // 2
+            font_name: root.font_name if root.font_name is not None else self.font_name
+            theme_text_color: 'Custom'
+            color: root.foreground
+            halign: 'center'
+            valign: 'top'
+            width: root.width
+            height: 0.25 * root.height
+
+
+<SmallMatchButton@MDIconButton>:
+    theme_text_color: 'Custom'
+    text_color: [1, 1, 1, 1]
+    md_bg_color: [0, 0, 0, 0]
+    color_disabled: [1, 1, 1, 0.2]
+    md_bg_color_disabled:[0, 0, 0, 0]
+
+
+<MatchScreen>:
+    BoxLayout:
+        orientation: 'vertical'
+        id: box
+        BoxLayout:
+            orientation: box.orientation
+            id: players
+            on_orientation:
+                toolbar.orientation = 'vertical' if self.orientation == 'horizontal' else 'horizontal'
+                root._adjust_players_position()
+            ScoreButton:
+                id: player_one
+                position: 'top'
+                player_name: "Player 1"
+                md_bg_color: [0.8, 0, 0, 1]
+                serving: True
+                on_release: app.match.score(1)
+                size_hint: 1, 1
+            ScoreButton:
+                id: player_two
+                position: 'bottom'
+                player_name: "Player 2"
+                md_bg_color: [0, 0, 0.8, 1]
+                serving: False
+                on_release: app.match.score(2)
+                size_hint: 1, 1
+        MDBoxLayout:
+            canvas.before:
+                Color:
+                    rgba: [0.0706, 0.0706, 0.0706, 1]
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+            orientation: 'horizontal'
+            id: toolbar
+            size_hint: None, None
+            width: box.width if box.orientation == 'vertical' else dp(48)
+            height: box.height if box.orientation == 'horizontal' else dp(48)
+            SmallMatchButton:
+                id: undo
+                icon: 'undo'
+                on_release: app.match.undo()
+            Widget:
+            SmallMatchButton:
+                icon: 'swap-horizontal-bold'
+                on_release:
+                    players.children = players.children[::-1]
+                    root._adjust_players_position()
+            Widget:
+            SmallMatchButton:
+                icon: 'stop'
+                on_release: app.stop_match()
+
+
+<GameOverScreen>:
+    canvas.before:
+        Color:
+            rgba: self.theme_cls.bg_normal
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    on_leave:
+        app.root.ids.screen_manager.transition = DefaultTransition()
+    on_touch_up:
+        app.root.ids.screen_manager.current = 'newmatch'
+    MDFloatLayout:
+        orientation: 'vertical'
+        FitImage:
+            width: root.width
+            height: min(self.width * 740 // 600, root.height - 2 * message.height - dp(24))
+            source: "assets/trophy.png"
+            pos_hint: {'center_x': 0.5}
+            y: 2 * message.height + (root.height - dp(24) - 2 * message.height - self.height) // 2
+            size_hint: None, None
+        MDLabel:
+            id: message
+            font_style: 'H3'
+            pos_hint: {'center_x': 0.5}
+            y: dp(24) + self.height // 2
+            halign: 'center'
+            width: root.width - dp(24)
+            size_hint: None, None

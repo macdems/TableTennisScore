@@ -1,0 +1,138 @@
+# Copyright (c) 2022 Maciej Dems
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+#:import newmatch_screen table_tennis_score.newmatch_screen
+
+
+<IconInputButton>:
+    size_hint: 1, None
+    icon_color: app.theme_cls.text_color
+    secondary_font_style: 'Body2'
+    IconLeftWidget:
+        id: left_icon
+        icon: root.icon
+        theme_text_color: 'Custom'
+        text_color: root.icon_color
+
+
+<ComboButton>:
+    size_hint: 1, None
+    secondary_font_style: 'Body2'
+    divider: None
+
+
+<PlayerButton>:
+    text_color: app.theme_cls.disabled_hint_text_color
+    icon_color: app.theme_cls.disabled_hint_text_color
+    icon: 'face'
+
+
+<NewMatchTab>:
+    orientation: 'vertical'
+    pos_hint: {'center_y': 0.6}
+    padding: '12dp'
+    Widget:
+        size_hint_y: 2
+    PlayerButton:
+        id: player_one
+        name: 'player1'
+        text: t.select_
+        secondary_text: t.first_player
+        on_release: self._menu.open()
+    Widget:
+    PlayerButton:
+        id: player_two
+        name: 'player2'
+        text: t.select_
+        secondary_text: t.second_player
+        on_release: self._menu.open()
+    Widget:
+    IconInputButton:
+        id: serving
+        text: t.first_player
+        icon: 'table-tennis'
+        secondary_text: t.serving
+        on_release: root.select_serving()
+    Widget:
+        size_hint_y: 2
+
+
+<NewMatchDetailsTab>:
+    orientation: 'vertical'
+    pos_hint: {'center_y': 0.6}
+    padding: '12dp'
+    Widget:
+        size_hint_y: 2
+    ComboButton:
+        id: sets
+        name: 'sets'
+        text: str(root.sets)
+        items: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+        secondary_text: t.number_of_sets
+        on_release: self.open_menu()
+        on_value:
+            root.sets = self.value
+    Widget:
+    ComboButton:
+        id: points
+        name: 'points'
+        text: str(root.points)
+        items: [11, 21]
+        secondary_text: t.number_of_points
+        on_release: self.open_menu()
+        on_value:
+            root.points = self.value
+    Widget:
+        size_hint_y: 3
+
+
+<NewMatchScreen>:
+    canvas.before:
+        Color:
+            rgba: root.theme_cls.bg_normal
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    on_enter:
+        newmatch_tab.make_player_menus(app.config)
+
+    MDBoxLayout:
+        orientation: 'vertical'
+        MainToolbar:
+            title: t.new_match
+
+        MDTabs:
+            NewMatchTab:
+                id: newmatch_tab
+                title: t.players
+
+            NewMatchDetailsTab:
+                id: newmatchdetails_tab
+                title: t.settings
+
+        StartMatchButton:
+            id: start_button
+            text: t.start_match
+            on_release: root.start_match()
+            size_hint_y: None
+            height: dp(48) #self.font_size + self.padding[1] * 2
+            padding: [self.theme_cls.horizontal_margins - dp(12), (self.height - self.font_size) / 2]
+            md_bg_color: self.theme_cls.primary_color
+            theme_text_color: 'Custom' if not self.opposite_colors else 'Primary'
+            text_color: self.specific_text_color
+            font_style: 'Button'
+            halign: 'center'
+            disabled: True

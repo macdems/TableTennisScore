@@ -1,0 +1,81 @@
+# Copyright (c) 2022 Maciej Dems
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+#:import hex_from_color kivy.utils.get_hex_from_color
+#:import text_colors kivymd.color_definitions.text_colors
+
+#:import players_screen table_tennis_score.players_screen
+
+
+<PlayerItem>:
+    IconLeftWidget:
+        theme_text_color: 'Custom'
+        text_color: root.icon_color
+        icon: root.icon
+
+
+<PlayersScreen>:
+    MDBoxLayout:
+        orientation: 'vertical'
+        MainToolbar:
+            title: t.players
+
+        MDRelativeLayout:
+            BoxLayout:
+                orientation: 'vertical'
+                width: root.width
+                height: self.parent.height
+                MDList:
+                    id: player_list
+                Widget:
+
+            MDFloatingActionButton:
+                icon: 'plus'
+                x: root.width - self.width - dp(12)
+                y: dp(12)
+                on_release:
+                    root.new_player()
+
+
+<PlayerEditBox>:
+    orientation: 'vertical'
+    size_hint_y: None
+    height: "100dp"
+    MDTextField:
+        id: player_name
+        hint_text: t.player_name
+    Widget:
+        size_hint_y: 1
+    MDBoxLayout:
+        orientation: 'horizontal'
+        spacing: '4dp'
+        valign: 'center'
+        Widget:
+        MDIconButton:
+            id: player_icon
+            size_hint: None, None
+            icon: 'face'
+            md_bg_color: app.theme_cls.primary_color
+            theme_text_color: 'Custom'
+            text_color: text_colors[app.theme_cls.primary_palette][app.theme_cls.primary_hue]
+        Widget:
+        MDIconButton:
+            id: player_color
+            size_hint: None, None
+            text: t.player_color
+            icon: 'palette-outline'
+            theme_text_color: 'Custom'
+            text_color: [1, 1, 1, 0.35]
+        Widget:

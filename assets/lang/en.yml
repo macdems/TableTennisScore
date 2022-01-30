@@ -1,0 +1,44 @@
+_label: English
+_country: US
+
+title: Yet Another Table Tennis Score
+version: Version
+start_match: Start
+new_match: New Match
+players: Players
+history: History
+stats: Stats
+settings: Settings
+
+confirm_exit: Press Back again to exit
+
+button_ok: OK
+button_cancel: Cancel
+button_delete: Delete
+button_yes: "Yes"
+button_no: "No"
+
+menu_edit: Edit
+menu_delete: Delete
+
+first_player: First Player
+second_player: Second Player
+select_: Select...
+serving: Serving
+play_for_serve: Play for serve
+number_of_sets: Number of sets
+number_of_points: Number of points in se
+
+confirm_stop_match: Do you really want to end the match?
+save_stopped_match: Do you want to save the score of this match?
+wins_match: "{} wins!"
+
+new_player: New Player
+edit_player: Edit Player
+player_name: Player's Name
+player_color: Color
+player_icon: Icon
+confirm_player_delete: Do you really want to delete player {}?
+
+match_unfinished: unfinished
+confirm_match_delete: Do you really want to delete match {}:{}?

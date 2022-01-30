@@ -1,0 +1,151 @@
+# Copyright (c) 2022 Maciej Dems
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+#:import DefaultTransition kivy.uix.screenmanager.NoTransition
+#:import MDToolbar kivymd.uix.toolbar.MDToolbar
+
+#:import t table_tennis_score.lang.txt
+#:import version version.__version__
+
+<MainToolbar@MDToolbar>:
+    title: t.title
+    left_action_items: [["menu", lambda *args: app.root.ids.nav_drawer.set_state("open")]]
+    # right_action_items: [["dots-vertical", lambda x: x]]
+
+
+#:include table_tennis_score/match_screen.kv
+#:include table_tennis_score/players_screen.kv
+#:include table_tennis_score/newmatch_screen.kv
+#:include table_tennis_score/history_screen.kv
+#:include table_tennis_score/stats_screen.kv
+#:include table_tennis_score/settings_screen.kv
+
+
+<IconMenuItem>:
+    IconLeftWidget:
+        icon: root.icon
+        on_release:
+            root.on_release()
+
+
+<ContentNavigationDrawer@MDBoxLayout>:
+    orientation: "vertical"
+    FloatLayout:
+        size_hint_y: None
+        height: "200dp"
+        canvas:
+            Color:
+                rgba: app.theme_cls.primary_color
+            Rectangle:
+                pos: self.pos
+                size: self.size
+        BoxLayout:
+            id: top_box
+            size_hint_y: None
+            height: "200dp"
+            x: root.parent.x
+            pos_hint: {'top': 1}
+            FitImage:
+                source: "assets/background.jpg"
+        MDLabel:
+            markup: True
+            text: f"[b]{t.title}[/b][size={int(0.75 * self.font_size)}]\n{t.version}: {version}[/size]"
+            theme_text_color: 'Custom'
+            text_color: [1, 1, 1, 1]
+            x: root.parent.x + dp(10)
+            y: root.height - top_box.height + dp(10)
+            size_hint_y: None
+            height: self.texture_size[1]
+
+    ScrollView:
+        MDBoxLayout:
+            orientation: 'vertical'
+            adaptive_height: True
+            OneLineIconListItem:
+                divider: None
+                text: t.new_match
+                on_release:
+                    app.switch_screen('newmatch')
+                IconLeftWidget:
+                    icon: 'table-tennis'
+                    on_release:
+                        app.switch_screen('newmatch')
+            OneLineIconListItem:
+                divider: None
+                text: t.players
+                on_release:
+                    app.switch_screen('players')
+                IconLeftWidget:
+                    icon: 'account'
+                    on_release:
+                        app.switch_screen('players')
+            OneLineIconListItem:
+                divider: None
+                text: t.history
+                on_release:
+                    app.switch_screen('history')
+                IconLeftWidget:
+                    icon: 'clock'
+                    on_release:
+                        app.switch_screen('history')
+            # OneLineIconListItem:
+            #     divider: None
+            #     text: t.stats
+            #     on_release:
+            #         app.switch_screen('stats')
+            #     IconLeftWidget:
+            #         icon: 'chart-bar'
+            #         on_release:
+            #             app.switch_screen('stats')
+            OneLineIconListItem:
+                divider: None
+                text: t.settings
+                on_release:
+                    app.switch_screen('settings')
+                IconLeftWidget:
+                    icon: 'cog'
+                    on_release:
+                        app.switch_screen('settings')
+
+
+MDNavigationLayout:
+    ScreenManager:
+        id: screen_manager
+        transition: DefaultTransition()
+
+        NewMatchScreen:
+            name: 'newmatch'
+            id: newmatch_screen
+        PlayersScreen:
+            name: 'players'
+            id: players_screen
+        HistoryScreen:
+            name: 'history'
+            id: history_screen
+        StatsScreen:
+            name: 'stats'
+        SettingsScreen:
+            name: 'settings'
+        MatchScreen:
+            name: 'match'
+            id: match_screen
+        GameOverScreen:
+            name: 'gameover'
+            id: gameover_screen
+
+    MDNavigationDrawer:
+        id: nav_drawer
+        type: 'modal'
+        ContentNavigationDrawer:

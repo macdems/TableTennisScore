@@ -1,0 +1,43 @@
+_label: Polski
+_country: POLAND
+
+version: wersja
+start_match: Rozpocznij
+players: Zawodnicy
+new_match: Nowa gra
+history: Historia
+stats: Statystyki
+settings: Ustawienia
+
+confirm_exit: Naciśnij Wstecz ponownie aby zamknąć aplikację
+
+button_ok: OK
+button_cancel: Anuluj
+button_delete: Usuń
+button_yes: Tak
+button_no: Nie
+
+menu_edit: Edytuj
+menu_delete: Usuń
+
+first_player: Pierwszy zawodnik
+second_player: Drugi zawodnik
+select_: Wybierz...
+serving: Serwujący
+play_for_serve: Graj o serw
+number_of_sets: Ilość setów
+number_of_points: Ilość punktów w secie
+
+confirm_stop_match: Czy na pewno chcesz przerwać tę grę?
+save_stopped_match: Czy chcesz zapisać aktualny wynik tej gry?
+wins_match: "Zwycięża {}!"
+
+new_player: Nowy zawodnik
+edit_player: Edytuj zawodnika
+player_name: Imię zawodnika
+player_color: Kolor
+player_icon: Ikona
+confirm_player_delete: Czy na pewno chcesz usunąć zawodnika {}?
+
+match_unfinished: niedokończone
+confirm_match_delete: Czy na pewno chcesz usunąć mecz {}:{}?
