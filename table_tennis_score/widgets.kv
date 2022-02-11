@@ -1,0 +1,50 @@
+# Copyright (c) 2022 Maciej Dems
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+#:import MDToolbar kivymd.uix.toolbar.MDToolbar
+
+#:import widgets table_tennis_score.widgets
+
+
+<MainToolbar@MDToolbar>:
+    title: t.title
+    left_action_items: [["menu", lambda *args: app.root.ids.nav_drawer.set_state("open")]]
+    # right_action_items: [["dots-vertical", lambda x: x]]
+
+
+<IconMenuItem>:
+    icon_color: app.theme_cls.text_color
+    IconLeftWidget:
+        icon: root.icon
+        text_color: root.icon_color
+        theme_text_color: 'Custom'
+        on_release:
+            root.on_release()
+
+
+<ComboListItem>:
+    size_hint: 1, None
+    secondary_font_style: 'Body2'
+
+
+<IconComboListItem>:
+    size_hint: 1, None
+    icon_color: app.theme_cls.text_color
+    secondary_font_style: 'Body2'
+    IconLeftWidget:
+        id: left_icon
+        icon: root.icon
+        theme_text_color: 'Custom'
+        text_color: root.icon_color

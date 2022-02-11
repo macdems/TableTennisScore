@@ -16,27 +16,17 @@
 #:import newmatch_screen table_tennis_score.newmatch_screen
 
 
-<IconInputButton>:
-    size_hint: 1, None
-    icon_color: app.theme_cls.text_color
-    secondary_font_style: 'Body2'
+<PlayerCombo>:
+    menu_item_class: 'IconMenuItem'
+    text_color: app.theme_cls.disabled_hint_text_color
+    icon_color: app.theme_cls.disabled_hint_text_color
+    icon: 'face'
+    text: t.select_
     IconLeftWidget:
         id: left_icon
         icon: root.icon
         theme_text_color: 'Custom'
         text_color: root.icon_color
-
-
-<ComboButton>:
-    size_hint: 1, None
-    secondary_font_style: 'Body2'
-    divider: None
-
-
-<PlayerButton>:
-    text_color: app.theme_cls.disabled_hint_text_color
-    icon_color: app.theme_cls.disabled_hint_text_color
-    icon: 'face'
 
 
 <NewMatchTab>:
@@ -45,57 +35,64 @@
     padding: '12dp'
     Widget:
         size_hint_y: 2
-    PlayerButton:
+    PlayerCombo:
         id: player_one
         name: 'player1'
-        text: t.select_
         secondary_text: t.first_player
-        on_release: self._menu.open()
     Widget:
-    PlayerButton:
+    PlayerCombo:
         id: player_two
         name: 'player2'
-        text: t.select_
         secondary_text: t.second_player
-        on_release: self._menu.open()
     Widget:
-    IconInputButton:
+    IconComboListItem:
         id: serving
-        text: t.first_player
+        section: 'match'
+        name: 'serving'
         icon: 'table-tennis'
+        textid: 'serving_options'
         secondary_text: t.serving
-        on_release: root.select_serving()
+        items: ['1', '2', '0']
+        value: '1'
     Widget:
         size_hint_y: 2
 
 
-<NewMatchDetailsTab>:
+<NewMatchDetailsTab@MDBoxLayout+MDTabsBase>:
     orientation: 'vertical'
     pos_hint: {'center_y': 0.6}
     padding: '12dp'
     Widget:
         size_hint_y: 2
-    ComboButton:
+    ComboListItem:
         id: sets
-        name: 'sets'
-        text: str(root.sets)
         items: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+        value: 3
         secondary_text: t.number_of_sets
-        on_release: self.open_menu()
-        on_value:
-            root.sets = self.value
+        section: 'match'
+        name: 'sets'
     Widget:
-    ComboButton:
+    ComboListItem:
         id: points
-        name: 'points'
-        text: str(root.points)
         items: [11, 21]
+        value: 11
         secondary_text: t.number_of_points
-        on_release: self.open_menu()
-        on_value:
-            root.points = self.value
+        section: 'match'
+        name: 'points'
     Widget:
         size_hint_y: 3
+
+
+<StartMatchButton>:
+    size_hint_y: None
+    height: dp(48) #self.font_size + self.padding[1] * 2
+    padding: [self.theme_cls.horizontal_margins - dp(12), (self.height - self.font_size) / 2]
+    md_bg_color: self.theme_cls.primary_color
+    theme_text_color: 'Custom' if not self.opposite_colors else 'Primary'
+    text_color: self.specific_text_color
+    font_style: 'Button'
+    halign: 'center'
+
 
 
 <NewMatchScreen>:
@@ -107,7 +104,7 @@
             size: self.size
 
     on_enter:
-        newmatch_tab.make_player_menus(app.config)
+        newmatch_tab.setup_players()
 
     MDBoxLayout:
         orientation: 'vertical'
@@ -127,12 +124,4 @@
             id: start_button
             text: t.start_match
             on_release: root.start_match()
-            size_hint_y: None
-            height: dp(48) #self.font_size + self.padding[1] * 2
-            padding: [self.theme_cls.horizontal_margins - dp(12), (self.height - self.font_size) / 2]
-            md_bg_color: self.theme_cls.primary_color
-            theme_text_color: 'Custom' if not self.opposite_colors else 'Primary'
-            text_color: self.specific_text_color
-            font_style: 'Button'
-            halign: 'center'
             disabled: True

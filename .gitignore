@@ -1,4 +1,4 @@
 table_tennis_score/tabletennisscore.ini
-
+*.db
 /.buildozer
 /bin

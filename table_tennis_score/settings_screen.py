@@ -13,7 +13,19 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+from kivy.app import App
+from kivy.metrics import dp
+from kivy.properties import ColorProperty, ListProperty, ObjectProperty, NumericProperty, StringProperty
+from kivy.uix.behaviors import ButtonBehavior
+from kivymd.theming import ThemableBehavior
+from kivymd.uix.behaviors import RectangularRippleBehavior, SpecificBackgroundColorBehavior
+from kivymd.uix.boxlayout import MDBoxLayout
+from kivymd.uix.label import MDLabel
+from kivymd.uix.list import TwoLineIconListItem, TwoLineListItem
+from kivymd.uix.menu import MDDropdownMenu
 from kivymd.uix.screen import MDScreen
+
+from .lang import txt
 
 
 class SettingsScreen(MDScreen):

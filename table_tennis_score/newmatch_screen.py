@@ -13,97 +13,56 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-from random import choices
 from kivy.app import App
 from kivy.metrics import dp
-from kivy.properties import ColorProperty, ListProperty, ObjectProperty, NumericProperty, StringProperty
+from kivy.properties import ObjectProperty
 from kivy.uix.behaviors import ButtonBehavior
 from kivymd.theming import ThemableBehavior
 from kivymd.uix.behaviors import RectangularRippleBehavior, SpecificBackgroundColorBehavior
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.label import MDLabel
-from kivymd.uix.list import TwoLineIconListItem, TwoLineListItem
-from kivymd.uix.menu import MDDropdownMenu
+from kivymd.uix.list import TwoLineIconListItem
 from kivymd.uix.screen import MDScreen
 from kivymd.uix.tab import MDTabsBase
 
 from .lang import txt
-from .model import dbsession, Player
-
-SERVING_TEXT = [txt.play_for_serve, txt.first_player, txt.second_player]
+from .model import Player, dbsession
+from .widgets import MenuBehavior
 
 
 class StartMatchButton(MDLabel, RectangularRippleBehavior, ButtonBehavior, ThemableBehavior, SpecificBackgroundColorBehavior):
     pass
 
 
-class ComboButton(TwoLineListItem):
-    name = StringProperty()
-    items = ListProperty()
-    value = ObjectProperty()
-
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self._menu = None
-
-    def _item_callback(self, item):
-        self._menu.dismiss()
-        self.text = str(item)
-        self.value = item
-        if self.name:
-            config = App.get_running_app().config
-            config.set('match', self.name, item)
-            config.write()
-
-    def _get_item_callback(self, item):
-        return lambda: self._item_callback(item)
-
-    def open_menu(self):
-        if self._menu is None:
-            menu_items = [{
-                'text': str(item),
-                'viewclass': 'OneLineListItem',
-                "height": dp(48),
-                'on_release': self._get_item_callback(item)
-            } for item in self.items]
-            self._menu = MDDropdownMenu(caller=self, items=menu_items, width_mult=4)
-        self._menu.open()
-
-
-class IconInputButton(TwoLineIconListItem):
-    icon = StringProperty()
-    icon_color = ColorProperty()
-
-
-class PlayerButton(IconInputButton):
+class PlayerCombo(TwoLineIconListItem, MenuBehavior):
     data = ObjectProperty(allownone=True)
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self._menu = None
         if self.data is None:
             self.theme_text_color = 'Custom'
 
     def _player_selected_callback(self, player):
         return lambda: self.on_player_selected(player)
 
-    def make_menu(self, currentid):
-        menu_items = [{
+    def get_menu(self):
+        return [{
             'text': player.name,
             'icon': player.icon,
-            'viewclass': 'IconMenuItem',
-            'data': player,
-            "height": dp(48),
-            'on_release': self._player_selected_callback(player=player)
+            'icon_color': player.color,
+            'callback': self._player_selected_callback(player=player)
         } for player in Player.get_all()]
-        self._menu = MDDropdownMenu(caller=self.ids.left_icon, items=menu_items, width_mult=4)
+
+    def on_release(self, *args):
+        self.menu_open(caller=self.ids.left_icon)
+
+    def setup(self, currentid):
         if currentid is not None:
             self._select_player(dbsession.query(Player).get(currentid))
         else:
             self._select_player(None)
 
     def on_player_selected(self, player):
-        self._menu.dismiss()
         self._select_player(player)
         config = App.get_running_app().config
         config.set('match', self.name, player.id)
@@ -133,77 +92,20 @@ class PlayerButton(IconInputButton):
 
 class NewMatchTab(MDBoxLayout, MDTabsBase):
 
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.serving_player = 1
-        self._serving_menu = None
-
-    def make_player_menus(self, config):
-        self.ids.player_one.make_menu(config.get('match', 'player1'))
-        self.ids.player_two.make_menu(config.get('match', 'player2'))
-
-    def select_serving(self):
-        if self._serving_menu is None:
-            menu_items = [
-                {
-                    'text': txt.first_player,
-                    'viewclass': 'OneLineListItem',
-                    "height": dp(48),
-                    'on_release': lambda: self.on_serving_selected(1)
-                },
-                {
-                    'text': txt.second_player,
-                    'viewclass': 'OneLineListItem',
-                    "height": dp(48),
-                    'on_release': lambda: self.on_serving_selected(2)
-                },
-                {
-                    'text': txt.play_for_serve,
-                    'viewclass': 'OneLineListItem',
-                    "height": dp(48),
-                    'on_release': lambda: self.on_serving_selected(0)
-                },
-            ]
-            self._serving_menu = MDDropdownMenu(caller=self.ids.serving.ids.left_icon, items=menu_items, width_mult=4)
-        self._serving_menu.open()
-
-    def on_serving_selected(self, option):
-        self._serving_menu.dismiss()
-        self.serving_player = option
-        self.ids.serving.text = SERVING_TEXT[option]
+    def setup_players(self, *args, **kwargs):
         config = App.get_running_app().config
-        config.set('match', 'serving', option)
-        config.write()
-
-
-class NewMatchDetailsTab(MDBoxLayout, MDTabsBase):
-    sets = NumericProperty(3)
-    points = NumericProperty(11)
-
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.sets = 3
-        self.points = 11
-        self._sets_menu = None
-        self._points_menu = None
+        self.ids.player_one.setup(config.get('match', 'player1'))
+        self.ids.player_two.setup(config.get('match', 'player2'))
 
 
 class NewMatchScreen(MDScreen, ThemableBehavior):
 
-    def setup(self, config):
-        basic_tab = self.ids.newmatch_tab
-        basic_tab.make_player_menus(config)
-        serving = int(config.get('match', 'serving'))
-        basic_tab.serving_player = serving
-        basic_tab.ids.serving.text = SERVING_TEXT[serving]
-
-        details_tab = self.ids.newmatchdetails_tab
-        details_tab.sets = int(config.get('match', 'sets'))
-        details_tab.points = int(config.get('match', 'points'))
-
     def start_match(self):
-        player1 = self.ids.newmatch_tab.ids.player_one.data
-        player2 = self.ids.newmatch_tab.ids.player_two.data
-        sets = self.ids.newmatchdetails_tab.sets
-        points = self.ids.newmatchdetails_tab.points
-        App.get_running_app().start_match(player1, player2, self.ids.newmatch_tab.serving_player, sets=sets, set_points=points)
+        newmatch_tab = self.ids.newmatch_tab
+        player1 = newmatch_tab.ids.player_one.data
+        player2 = newmatch_tab.ids.player_two.data
+        serving = int(newmatch_tab.ids.serving.value)
+        newmatchdetails_tab = self.ids.newmatchdetails_tab
+        sets = int(newmatchdetails_tab.ids.sets.value)
+        points = int(newmatchdetails_tab.ids.points.value)
+        App.get_running_app().start_match(player1, player2, serving, sets=sets, set_points=points)

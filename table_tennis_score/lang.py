@@ -28,9 +28,9 @@ class Text(Observable):
 
     def __init__(self, lang=DEFAULT):
         super().__init__()
-        self.set_lang(lang)
+        self._set_lang(lang)
 
-    def set_lang(self, lang):
+    def _set_lang(self, lang):
         if lang not in self.strings:
             fname = os.path.join(os.path.dirname(__file__), '..', 'assets', 'lang', f'{lang}.yml')
             try:
@@ -47,23 +47,23 @@ class Text(Observable):
             return self.strings[DEFAULT].get(string, string)
 
     def fbind(self, name, func, args, **kwargs):
-        if name == "tr":
+        if name == "lang":
             self._observers.append((func, args, kwargs))
         else:
             return super().fbind(name, func, *args, **kwargs)
 
     def funbind(self, name, func, args, **kwargs):
-        if name == "tr":
+        if name == "lang":
             key = (func, args, kwargs)
             if key in self._observers:
                 self._observers.remove(key)
         else:
             return super().funbind(name, func, *args, **kwargs)
 
-    def switch_lang(self, lang):
-        self.set_lang(lang)
+    def set_lang(self, lang):
+        self._set_lang(lang)
         for func, largs, kwargs in self._observers:
-            func(largs, None, None)
+            func(lang, *largs, **kwargs)
 
 
 txt = Text()

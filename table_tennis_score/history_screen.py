@@ -14,26 +14,24 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 from kivy.app import App
-from kivy.metrics import dp
 from kivy.properties import ObjectProperty
 from kivy.utils import get_hex_from_color
 from kivymd.uix.behaviors import TouchBehavior
 from kivymd.uix.button import MDFlatButton
 from kivymd.uix.dialog import MDDialog
 from kivymd.uix.list import ThreeLineListItem
-from kivymd.uix.menu import MDDropdownMenu
 from kivymd.uix.screen import MDScreen
 
 from .lang import txt
 from .model import Match, dbsession
+from .widgets import MenuBehavior
 
 
-class GameListItem(ThreeLineListItem, TouchBehavior):
+class GameListItem(ThreeLineListItem, TouchBehavior, MenuBehavior):
     data = ObjectProperty()
 
     def __init__(self, **kwargs):
-        super(). __init__(**kwargs)
-        self._menu = None
+        super().__init__(**kwargs)
         self._dialog = None
 
     def on_data(self, instance, value):
@@ -86,26 +84,18 @@ class GameListItem(ThreeLineListItem, TouchBehavior):
         else:
             self.tertiary_text = " "
 
+    def get_menu(self):
+        return [{'text': txt.menu_delete, 'callback': self._delete}]
+
     def on_long_touch(self, touch, *args):
-        if self._menu is None:
-            menu_items = [
-{
-                    'text': txt.menu_delete,
-                    'viewclass': 'OneLineListItem',
-                    "height": dp(48),
-                    'on_release': self._delete
-                },
-            ]
-            self._menu = MDDropdownMenu(caller=self, items=menu_items, width_mult=4)
-        self._menu.open()
+        self.menu_open()
 
     def _delete(self, *args):
-        self._menu.dismiss()
         if self._dialog is None:
             self._dialog = MDDialog(
                 text=txt.confirm_match_delete.format(self.data.player1.name, self.data.player2.name),
                 buttons=[
-                    MDFlatButton(text=txt.button_cancel, on_release=lambda *args: self._dialog.dismiss()),
+                    MDFlatButton(text=txt.button_cancel, on_releacase=lambda *args: self._dialog.dismiss()),
                     MDFlatButton(
                         text=txt.button_delete,
                         text_color=App.get_running_app().theme_cls.primary_color,
@@ -125,7 +115,7 @@ class GameListItem(ThreeLineListItem, TouchBehavior):
 class HistoryScreen(MDScreen):
 
     def __init__(self, **kwargs):
-        super(). __init__(**kwargs)
+        super().__init__(**kwargs)
         self.offset = 0
 
     def on_pre_enter(self):

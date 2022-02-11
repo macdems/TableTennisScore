@@ -42,10 +42,6 @@ from .match import Match
 Config.set('kivy', 'exit_on_escape', '0')
 
 
-class IconMenuItem(OneLineIconListItem):
-    icon = StringProperty()
-
-
 class TableTennisScoreApp(MDApp):
 
     def __init__(self, **kwargs):
@@ -62,7 +58,7 @@ class TableTennisScoreApp(MDApp):
     def build(self):
         super().build()
         Window.bind(on_keyboard=self.on_key_press_back)
-        self.root.ids.newmatch_screen.setup(self.config)
+        self.root.ids.newmatch_screen.ids.newmatch_tab.setup_players()
 
     def _get_lang(self):
         if jnius is not None:
@@ -82,7 +78,7 @@ class TableTennisScoreApp(MDApp):
         super().load_kv(filename)
 
     def build_config(self, config):
-        config.setdefaults('interface', {'lang': 'Auto', 'style': 'Auto', 'rotation': 'Auto', 'tts': True, 'advantages': True})
+        config.setdefaults('settings', {'lang': 'Auto', 'style': 'Auto', 'rotation': 'Auto', 'tts': True, 'advantages': True})
         config.setdefaults('match', {'player1': None, 'player2': None, 'serving': 1, 'sets': 3, 'points': 11})
 
     # def on_config_change(self, config, section, key, value):

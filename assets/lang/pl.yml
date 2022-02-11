@@ -24,7 +24,10 @@ first_player: Pierwszy zawodnik
 second_player: Drugi zawodnik
 select_: Wybierz...
 serving: Serwujący
-play_for_serve: Graj o serw
+serving_options:
+  "0": Graj o pierwszy serw
+  "1": Pierwszy zawodnik
+  "2": Drugi zawodnik
 number_of_sets: Ilość setów
 number_of_points: Ilość punktów w secie
 

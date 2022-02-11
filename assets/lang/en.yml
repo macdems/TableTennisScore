@@ -25,7 +25,10 @@ first_player: First Player
 second_player: Second Player
 select_: Select...
 serving: Serving
-play_for_serve: Play for serve
+serving_options:
+  '0': Play for Serve
+  '1': First Player
+  '2': Second Player
 number_of_sets: Number of sets
 number_of_points: Number of points in se
 

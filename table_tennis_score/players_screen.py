@@ -25,11 +25,11 @@ from kivymd.uix.behaviors import TouchBehavior
 from kivymd.uix.button import MDFlatButton
 from kivymd.uix.dialog import MDDialog
 from kivymd.uix.list import OneLineIconListItem
-from kivymd.uix.menu import MDDropdownMenu
 from kivymd.uix.screen import MDScreen
 
 from .lang import txt
 from .model import Player, dbsession
+from .widgets import MenuBehavior
 
 PLAYER_ICONS = [
     'face',
@@ -62,34 +62,21 @@ class PlayerItem(OneLineIconListItem):
                 pass
 
 
-class PlayerItemInteractive(PlayerItem, TouchBehavior):
+class PlayerItemInteractive(PlayerItem, TouchBehavior, MenuBehavior):
 
     def __init__(self, **kwargs):
-        super(). __init__(**kwargs)
+        super().__init__(**kwargs)
         self._menu = None
         self._dialog = None
 
+    def get_menu(self):
+        return [{'text': txt.menu_edit, 'callback': self._edit}, {'text': txt.menu_delete, 'callback': self._delete}]
+
     def on_long_touch(self, touch, *args):
-        if self._menu is None:
-            menu_items = [
-                {
-                    'text': txt.menu_edit,
-                    'viewclass': 'OneLineListItem',
-                    "height": dp(48),
-                    'on_release': self._edit
-                },
-                {
-                    'text': txt.menu_delete,
-                    'viewclass': 'OneLineListItem',
-                    "height": dp(48),
-                    'on_release': self._delete
-                },
-            ]
-            self._menu = MDDropdownMenu(caller=self, items=menu_items, width_mult=4)
-        self._menu.open()
+        self.menu_open()
 
     def _delete(self, *args):
-        self._menu.dismiss()
+        self.menu_close()
         if self._dialog is None:
             self._dialog = MDDialog(
                 text=txt.confirm_player_delete.format(self.data.name),
@@ -130,7 +117,7 @@ class PlayerEditBox(BoxLayout):
 class PlayersScreen(MDScreen):
 
     def __init__(self, **kwargs):
-        super(). __init__(**kwargs)
+        super().__init__(**kwargs)
         self._dialog = None
         Clock.schedule_once(lambda *args: self.populate_player_list())
 

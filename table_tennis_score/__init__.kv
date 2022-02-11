@@ -14,16 +14,11 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #:import DefaultTransition kivy.uix.screenmanager.NoTransition
-#:import MDToolbar kivymd.uix.toolbar.MDToolbar
 
 #:import t table_tennis_score.lang.txt
 #:import version version.__version__
 
-<MainToolbar@MDToolbar>:
-    title: t.title
-    left_action_items: [["menu", lambda *args: app.root.ids.nav_drawer.set_state("open")]]
-    # right_action_items: [["dots-vertical", lambda x: x]]
-
+#:include table_tennis_score/widgets.kv
 
 #:include table_tennis_score/match_screen.kv
 #:include table_tennis_score/players_screen.kv
@@ -31,13 +26,6 @@
 #:include table_tennis_score/history_screen.kv
 #:include table_tennis_score/stats_screen.kv
 #:include table_tennis_score/settings_screen.kv
-
-
-<IconMenuItem>:
-    IconLeftWidget:
-        icon: root.icon
-        on_release:
-            root.on_release()
 
 
 <ContentNavigationDrawer@MDBoxLayout>:
