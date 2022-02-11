@@ -16,10 +16,54 @@
 #:import settings_screen table_tennis_score.settings_screen
 
 
+<SettingsComboListItem>:
+    text_prop: 'secondary_text'
+    Widget:
+        id: left
+        size_hint: None, None
+        x: root.x + dp(16)
+        y: root.y + root.height/2
+        size: 0, 0
+
+
+
 <SettingsScreen>:
     MDBoxLayout:
         orientation: 'vertical'
         MainToolbar:
             title: t.settings
 
+        SettingsComboListItem:
+            section: 'settings'
+            name: 'lang'
+            text: t.settings_lang
+            items: t.available_langs
+            textid: 'available_langs'
+            value: 'auto'
+            on_value:
+                app.set_lang(args[1])
+        SettingsComboListItem:
+            section: 'settings'
+            name: 'style'
+            text: t.settings_style
+            textid: 'settings_style_options'
+            items: ['auto', 'Light', 'Dark']
+            value: 'auto'
+            on_value:
+                app.set_style(args[1])
+        SettingsComboListItem:
+            section: 'settings'
+            name: 'rotation'
+            text: t.settings_rotation
+            textid: 'settings_rotation_options'
+            items: ['auto', 'vertical', 'horizontal']
+            value: 'auto'
+        BooleanListItem:
+            section: 'settings'
+            name: 'tts'
+            text: t.settings_tts
+        BooleanListItem:
+            section: 'settings'
+            name: 'advantages'
+            text: t.settings_advantages
         Widget:

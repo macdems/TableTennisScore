@@ -1,4 +1,3 @@
-_label: Polski
 _country: POLAND
 
 version: wersja
@@ -44,3 +43,19 @@ confirm_player_delete: Czy na pewno chcesz usunąć zawodnika {}?
 
 match_unfinished: niedokończone
 confirm_match_delete: Czy na pewno chcesz usunąć mecz {}:{}?
+
+settings_lang: Język
+settings_style: Styl ciemny
+settings_rotation: Obrót ekranu poczas meczu
+settings_tts: Komunikaty głosowe
+settings_advantages: Pokaż przewagi
+
+settings_style_options:
+  auto: Użyj ustawień systemowych
+  Light: Tryb ciemny wyłączony
+  Dark: Tryb ciemny włączony
+
+settings_rotation_options:
+  auto: Automatycznie
+  vertical: Pionowy
+  horizontal: Poziomy

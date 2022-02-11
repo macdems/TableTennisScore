@@ -50,7 +50,6 @@ class TableTennisScoreApp(MDApp):
         model.init_db(self)
         self.theme_cls.primary_palette = 'Indigo'
         self.theme_cls.accent_palette = 'Pink'
-        self.theme_cls.theme_style = 'Light'
         self.match = None
         self._confirm_stop_dialog = None
         self._exitting = False
@@ -71,20 +70,23 @@ class TableTennisScoreApp(MDApp):
             return os.environ.get('LANG', DEFAULT_LANG).split('.')[0].split('_')[0]
 
     def load_kv(self, filename=None):
-        txt.set_lang(self._get_lang())
+        self.set_lang(self.config.get('settings', 'lang'))
         if filename is None:
             kv_directory = self.kv_directory or os.path.dirname(__file__)
             filename = os.path.join(kv_directory, '__init__.kv')
         super().load_kv(filename)
 
     def build_config(self, config):
-        config.setdefaults('settings', {'lang': 'Auto', 'style': 'Auto', 'rotation': 'Auto', 'tts': True, 'advantages': True})
+        config.setdefaults('settings', {'lang': 'auto', 'style': 'auto', 'rotation': 'auto', 'tts': True, 'advantages': True})
         config.setdefaults('match', {'player1': None, 'player2': None, 'serving': 1, 'sets': 3, 'points': 11})
 
-    # def on_config_change(self, config, section, key, value):
-    #     if section == 'interface' :
-    #         if key == 'lang':
-    #             txt.switch_lang(self._get_lang())
+    def set_lang(self, value):
+        if value == 'auto': value = self._get_lang()
+        txt.set_lang(value)
+
+    def set_style(self, value):
+        if value == 'auto': value = 'Light'  #TODO
+        self.theme_cls.theme_style = value
 
     def _cancel_exiting(self, *args):
         self._exitting = False
@@ -115,7 +117,11 @@ class TableTennisScoreApp(MDApp):
         model.dbsession.add(self._matchdb)
         model.dbsession.commit()
 
-        self.match = Match(self, self.root.ids.match_screen, player1, player2, **kwargs)
+        adv = self.config.get('settings', 'advantages')
+        adv = adv == 'True' if isinstance(adv, str) else adv
+        tts = self.config.get('settings', 'tts')
+        tts = tts == 'True' if isinstance(tts, str) else tts
+        self.match = Match(self, self.root.ids.match_screen, player1, player2, show_advantages=adv, tts=tts, **kwargs)
 
         self.root.ids.screen_manager.transition = WipeTransition()
         self.root.ids.screen_manager.current = 'match'

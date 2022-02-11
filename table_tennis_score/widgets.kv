@@ -48,3 +48,12 @@
         icon: root.icon
         theme_text_color: 'Custom'
         text_color: root.icon_color
+
+
+<BooleanListItemCheckbox@MDCheckbox+IRightBodyTouch>:
+
+<BooleanListItem>:
+    on_release: checkbox.state = 'down' if checkbox.state == 'normal' else 'normal'
+    BooleanListItemCheckbox:
+        id: checkbox
+        on_state: root.save_value(args[1] == 'down')

@@ -22,12 +22,14 @@ class SetOver(Exception):
 
 class Match:
 
-    def __init__(self, app, screen, player1, player2, sets=3, set_points=11):
+    def __init__(self, app, screen, player1, player2, sets=3, set_points=11, show_advantages=True, tts=True):
         self._app = app
         self._screen = screen
         self.players = player1, player2
         self._match_sets = sets
         self._last_point = set_points - 1
+        self._show_advantages = show_advantages
+        self._tts = tts
         screen.set_players(player1, player2)
 
     def start(self, serving):
@@ -67,15 +69,20 @@ class Match:
                     raise SetOver(0)
                 elif delta >= 2:
                     raise SetOver(1)
-                elif delta == -1:
-                    self._screen.set_score((f'{self._last_point}+', self._last_point))
-                    self._say('advantage', self.players[0].name)
-                elif delta == 1:
-                    self._screen.set_score((self._last_point, f'{self._last_point}+'))
-                    self._say('advantage', self.players[1].name)
                 else:
-                    self._screen.set_score((self._last_point, self._last_point))
-                    self._say('deuce')
+                    if self._show_advantages:
+                        if delta == -1:
+                            self._screen.set_score((f'{self._last_point}+', self._last_point))
+                            self._say('advantage', self.players[0].name)
+                        elif delta == 1:
+                            self._screen.set_score((self._last_point, f'{self._last_point}+'))
+                            self._say('advantage', self.players[1].name)
+                        else:
+                            self._screen.set_score((self._last_point, self._last_point))
+                            self._say('deuce')
+                    else:
+                        self._screen.set_score(points)
+                        self._say_score(points, serving)
             else:
                 self._screen.set_score(points)
                 self._say_score(points, serving)
@@ -147,4 +154,5 @@ class Match:
 
     def _say(self, what, *args, **kwargs):
         """TODO"""
-        print(what, *args)
+        if self._tts:
+            print(what, *args)

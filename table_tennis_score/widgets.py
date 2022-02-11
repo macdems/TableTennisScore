@@ -15,9 +15,9 @@
 
 from kivy.app import App
 from kivy.metrics import dp
-from kivy.properties import ColorProperty, ListProperty, ObjectProperty, NumericProperty, StringProperty
+from kivy.properties import BooleanProperty, ColorProperty, ListProperty, NumericProperty, ObjectProperty, StringProperty
 from kivymd.theming import ThemableBehavior
-from kivymd.uix.list import OneLineIconListItem, TwoLineIconListItem, TwoLineListItem
+from kivymd.uix.list import OneLineIconListItem, TwoLineIconListItem, TwoLineListItem, OneLineRightIconListItem
 from kivymd.uix.menu import MDDropdownMenu
 
 from .lang import txt
@@ -35,7 +35,7 @@ class MenuBehavior:
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._menu = None
-        txt.bind(lang=self.on_menu_items)
+        txt.fbind(None, self.on_lang, ())
 
     def get_menu(self):
         return []
@@ -63,16 +63,14 @@ class MenuBehavior:
     def menu_close(self):
         self._menu.dismiss()
 
-    def on_menu_items(self, *args, **kwargs):
+    def on_lang(self, *args, **kwargs):
         self._menu = None
 
 
-class ComboBehavior(MenuBehavior):
+class SettingsBehavior:
     section = StringProperty()
     name = StringProperty()
-    items = ListProperty()
     value = ObjectProperty()
-    textid = StringProperty()
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -85,9 +83,19 @@ class ComboBehavior(MenuBehavior):
         if self.section and self.name:
             self.value = App.get_running_app().config.get(self.section, self.name)
 
-    def on_textid(self, *args):
-        if self.value:
-            self.text = self._get_text(self.value)
+    def save_value(self, value):
+        if self.value != value:
+            self.value = value
+            if self.section and self.name:
+                config = App.get_running_app().config
+                config.set(self.section, self.name, value)
+                config.write()
+
+
+class ComboBehavior(MenuBehavior, SettingsBehavior):
+    items = ListProperty()
+    textid = StringProperty()
+    text_prop = StringProperty('text')
 
     def _get_text(self, value):
         if self.textid:
@@ -96,23 +104,17 @@ class ComboBehavior(MenuBehavior):
             return str(value)
 
     def on_value(self, instance, value):
-        self.text = self._get_text(value)
-
-    def _item_callback(self, value):
-        self.value = value
-        if self.section and self.name:
-            config = App.get_running_app().config
-            config.set(self.section, self.name, value)
-            config.write()
+        setattr(self, self.text_prop, self._get_text(value))
 
     def _get_item_callback(self, item):
-        return lambda: self._item_callback(item)
+        return lambda: self.save_value(item)
 
     def get_menu(self):
-        return [{
-            'text': self._get_text(item),
-            'callback': self._get_item_callback(item)
-        } for item in self.items]
+        return [{'text': self._get_text(item), 'callback': self._get_item_callback(item)} for item in self.items]
+
+    def on_lang(self, *args, **kwargs):
+        super().on_lang(*args, **kwargs)
+        setattr(self, self.text_prop, self._get_text(self.value))
 
 
 class ComboListItem(TwoLineListItem, ComboBehavior):
@@ -127,3 +129,13 @@ class IconComboListItem(TwoLineIconListItem, ComboBehavior):
 
     def on_release(self):
         self.menu_open(caller=self.ids.left_icon)
+
+
+class BooleanListItem(OneLineRightIconListItem, SettingsBehavior):
+    value = BooleanProperty()
+
+    def _init_value(self, *args, **kwargs):
+        if self.section and self.name:
+            value = App.get_running_app().config.get(self.section, self.name)
+            self.value = value == 'True' if isinstance(value, str) else value
+            self.ids.checkbox.state = 'down' if self.value else 'normal'

@@ -29,6 +29,7 @@ class Text(Observable):
     def __init__(self, lang=DEFAULT):
         super().__init__()
         self._set_lang(lang)
+        self._available_langs = None
 
     def _set_lang(self, lang):
         if lang not in self.strings:
@@ -39,6 +40,17 @@ class Text(Observable):
                 Logger.error(f'Lang: {err}')
         self.lang = lang
 
+    @property
+    def available_langs(self):
+        if self._available_langs is None:
+            self._available_langs = {'auto': "Auto"}
+            fname = os.path.join(os.path.dirname(__file__), '..', 'assets', 'lang', '_index.yml')
+            try:
+                self._available_langs.update(yaml.load(open(fname), Loader=yaml.BaseLoader))
+            except Exception as err:
+                Logger.error(f'Lang: {err}')
+        return self._available_langs
+
     def __getattr__(self, attr):
         string = str(attr)
         try:
@@ -47,23 +59,20 @@ class Text(Observable):
             return self.strings[DEFAULT].get(string, string)
 
     def fbind(self, name, func, args, **kwargs):
-        if name == "lang":
-            self._observers.append((func, args, kwargs))
-        else:
-            return super().fbind(name, func, *args, **kwargs)
+        self._observers.append((func, args))
 
     def funbind(self, name, func, args, **kwargs):
-        if name == "lang":
-            key = (func, args, kwargs)
-            if key in self._observers:
-                self._observers.remove(key)
+        key = (func, args)
+        if key in self._observers:
+            self._observers.remove(key)
         else:
             return super().funbind(name, func, *args, **kwargs)
 
     def set_lang(self, lang):
-        self._set_lang(lang)
-        for func, largs, kwargs in self._observers:
-            func(lang, *largs, **kwargs)
+        if lang != self.lang:
+            self._set_lang(lang)
+            for func, largs in self._observers:
+                func(largs, None, lang)
 
 
 txt = Text()

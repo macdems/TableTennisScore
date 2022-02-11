@@ -21,11 +21,18 @@ from kivymd.theming import ThemableBehavior
 from kivymd.uix.behaviors import RectangularRippleBehavior, SpecificBackgroundColorBehavior
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.label import MDLabel
-from kivymd.uix.list import TwoLineIconListItem, TwoLineListItem
+from kivymd.uix.list import TwoLineRightIconListItem, TwoLineListItem
 from kivymd.uix.menu import MDDropdownMenu
 from kivymd.uix.screen import MDScreen
 
 from .lang import txt
+from .widgets import ComboListItem
+
+
+class SettingsComboListItem(ComboListItem):
+
+    def on_release(self):
+        self.menu_open(self.ids.left)
 
 
 class SettingsScreen(MDScreen):
