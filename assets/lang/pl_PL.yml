@@ -1,5 +1,3 @@
-_country: POLAND
-
 version: wersja
 start_match: Rozpocznij
 players: Zawodnicy
@@ -49,6 +47,7 @@ settings_style: Styl ciemny
 settings_rotation: Obrót ekranu poczas meczu
 settings_tts: Komunikaty głosowe
 settings_advantages: Pokaż przewagi
+settings_tts_order: Kolejność podawania wyników
 
 settings_style_options:
   auto: Użyj ustawień systemowych
@@ -59,3 +58,18 @@ settings_rotation_options:
   auto: Automatycznie
   portrait: Pionowy
   landscape: Poziomy
+
+settings_tts_order_options:
+  player_order: Według kolejności graczy
+  first_serve: Najpierw pierwszy serwujący
+  current_serve: Najpierw aktualnie serwujący
+
+tts_begin_match: Mecz rozpoczęty.
+tts_serving: "Serwuje {}."
+tts_serve_play: Gra o serw.
+tts_advantage: "Przewaga: {}."
+tts_deuce: Równowaga.
+tts_wins_match: "{} wygrywa mecz."
+tts_wins_set: "{} wygrywa set."
+tts_change_places: Zamiana miejsc.
+tts_score: "{} do {}."

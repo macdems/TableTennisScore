@@ -26,6 +26,7 @@ if platform == 'android':
     ActivityInfo = autoclass('android.content.pm.ActivityInfo')
     Locale = autoclass('java.util.Locale')
     Configuration = autoclass('android.content.res.Configuration')
+    TextToSpeech = autoclass('android.speech.tts.TextToSpeech')
 
     if 'PYTHON_SERVICE_ARGUMENT' in os.environ:
         PythonService = autoclass('org.kivy.android.PythonService')
@@ -41,7 +42,7 @@ if platform == 'android':
             str: Country code
         """
         try:
-            return Locale.getDefault().toString().split('_')[0]
+            return Locale.getDefault().toString()
         except:
             return DEFAULT_LANG
 
@@ -81,12 +82,23 @@ if platform == 'android':
         else:
             raise ValueError("'mode' must be one of 'auto', 'portrait', or 'landscape'")
 
+    class TTS:
+        tts = None
+
+        def __init__(self, language):
+            if TTS.tts is None:
+                TTS.tts = TextToSpeech(PythonActivity.mActivity, None)
+            self.tts.setLanguage(Locale(language))
+
+        def __call__(self, text):
+            self.tts.speak(text, TextToSpeech.QUEUE_ADD, None)
+
 else:
     window_width = Window.size[0]
     Window.size = window_width, 1.8 * window_width
 
     def get_system_lang():
-        return os.environ.get('LANG', DEFAULT_LANG).split('.')[0].split('_')[0]
+        return os.environ.get('LANG', DEFAULT_LANG).split('.')[0]
 
     def get_system_theme():
         return os.environ.get('_POWERLEVEL9K_COLOR_SCHEME', 'light').title()
@@ -98,3 +110,11 @@ else:
             Window.size = 1.8 * window_width, window_width
         else:
             raise ValueError("'mode' must be one of 'auto', 'portrait', or 'landscape'")
+
+    class TTS:
+
+        def __init__(self, country):
+            self.country = country
+
+        def __call__(self, text):
+            print(text)

@@ -13,6 +13,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+from .lang import txt
+
 
 class SetOver(Exception):
 
@@ -22,7 +24,9 @@ class SetOver(Exception):
 
 class Match:
 
-    def __init__(self, app, screen, player1, player2, sets=3, set_points=11, show_advantages=True, tts=True):
+    def __init__(
+        self, app, screen, player1, player2, sets=3, set_points=11, show_advantages=True, tts=None, tts_order='player_order'
+    ):
         self._app = app
         self._screen = screen
         self.players = player1, player2
@@ -30,6 +34,7 @@ class Match:
         self._last_point = set_points - 1
         self._show_advantages = show_advantages
         self._tts = tts
+        self._tts_order = tts_order
         screen.set_players(player1, player2)
 
     def start(self, serving):
@@ -149,10 +154,13 @@ class Match:
         return sets, stats
 
     def _say_score(self, points, serving):
-        """TODO"""
+        if self._tts_order == 'first_serve':
+            if self._serving == 1: points = points[1], points[0]
+        elif self._tts_order == 'current_serve':
+            if serving == 1: points = points[1], points[0]
         self._say('score', *points)
 
     def _say(self, what, *args, **kwargs):
-        """TODO"""
+        text = getattr(txt, 'tts_' + what).format(*args, **kwargs)
         if self._tts:
-            print(what, *args)
+            self._tts(text)

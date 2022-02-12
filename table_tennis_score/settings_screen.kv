@@ -26,13 +26,17 @@
         size: 0, 0
 
 
-
 <SettingsScreen>:
     MDBoxLayout:
         orientation: 'vertical'
         MainToolbar:
             title: t.settings
 
+        # MDLabel:
+        #     text: t.settings_group_interface
+        #     font_style: 'Button'
+        #     theme_text_color: 'Custom'
+        #     text_color: app.theme_cls.primary_color
         SettingsComboListItem:
             section: 'settings'
             name: 'lang'
@@ -58,10 +62,22 @@
             textid: 'settings_rotation_options'
             items: ['auto', 'portrait', 'landscape']
             value: 'auto'
+        # MDLabel:
+        #     text: t.settings_group_match
+        #     font_style: 'Button'
+        #     theme_text_color: 'Custom'
+        #     text_color: app.theme_cls.primary_color
         BooleanListItem:
             section: 'settings'
             name: 'tts'
             text: t.settings_tts
+        SettingsComboListItem:
+            section: 'settings'
+            name: 'tts_order'
+            text: t.settings_tts_order
+            textid: 'settings_tts_order_options'
+            items: ['player_order', 'first_serve', 'current_serve']
+            value: 'player_order'
         BooleanListItem:
             section: 'settings'
             name: 'advantages'

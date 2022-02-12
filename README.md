@@ -25,10 +25,6 @@ Yet another scoring app for table tennis.
 On desktop simply run `main.py`.
 
 
-### Usage
-
-
-
 ## Android APK build
 
 In order to build Android package, you can use [Buildozer](https://github.com/kivy/buildozer). Simply type

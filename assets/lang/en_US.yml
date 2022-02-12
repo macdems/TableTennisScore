@@ -1,5 +1,3 @@
-_country: US
-
 title: Yet Another Table Tennis Score
 version: Version
 start_match: Start
@@ -45,11 +43,14 @@ confirm_player_delete: Do you really want to delete player {}?
 match_unfinished: match unfinished
 confirm_match_delete: Do you really want to delete match {}:{}?
 
+settings_group_interface: Interface Settings
 settings_lang: Language
 settings_style: Dark Mode
 settings_rotation: Match Screen Rotation
+settings_group_match: Match Settings
 settings_tts: Voice Output
 settings_advantages: Show Advantages
+settings_tts_order: Voice Score Report Order
 
 settings_style_options:
   auto: Use System Settings
@@ -60,3 +61,18 @@ settings_rotation_options:
   auto: Automatic
   portrait: Portrait
   landscape: Landscape
+
+settings_tts_order_options:
+  player_order: Follow Players' Order
+  first_serve: First Serving First
+  current_serve: Serving Player First
+
+tts_begin_match: Begin match.
+tts_serving: "{} is serving."
+tts_serve_play: Play for serve.
+tts_advantage: "{} has advantage."
+tts_deuce: Deuce.
+tts_wins_match: "{} wins the match."
+tts_wins_set: "{} wins the set."
+tts_change_places: Change places.
+tts_score: "{} to {}."

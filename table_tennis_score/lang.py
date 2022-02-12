@@ -19,7 +19,7 @@ import yaml
 from kivy.lang import Observable
 from kivy.logger import Logger
 
-DEFAULT = 'en'
+DEFAULT = 'en_US'
 
 
 class Text(Observable):

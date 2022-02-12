@@ -26,13 +26,12 @@ from kivymd.toast import toast
 from kivymd.uix.button import MDFlatButton
 from kivymd.uix.dialog import MDDialog
 
-from .system import get_system_lang, get_system_theme
+from .system import get_system_lang, get_system_theme, TTS
 
 from . import model
 from .lang import txt
 from .match import Match
 from .widgets import MenuBehavior
-
 
 Config.set('kivy', 'exit_on_escape', '0')
 
@@ -62,7 +61,16 @@ class TableTennisScoreApp(MDApp):
         super().load_kv(filename)
 
     def build_config(self, config):
-        config.setdefaults('settings', {'lang': 'auto', 'style': 'auto', 'rotation': 'auto', 'tts': True, 'advantages': True})
+        config.setdefaults(
+            'settings', {
+                'lang': 'auto',
+                'style': 'auto',
+                'rotation': 'auto',
+                'tts': True,
+                'tts_order': 'player_order',
+                'advantages': True
+            }
+        )
         config.setdefaults('match', {'player1': None, 'player2': None, 'serving': 1, 'sets': 3, 'points': 11})
 
     def set_lang(self, value):
@@ -117,7 +125,12 @@ class TableTennisScoreApp(MDApp):
         adv = adv == 'True' if isinstance(adv, str) else adv
         tts = self.config.get('settings', 'tts')
         tts = tts == 'True' if isinstance(tts, str) else tts
-        self.match = Match(self, self.root.ids.match_screen, player1, player2, show_advantages=adv, tts=tts, **kwargs)
+        if tts:
+            tts = TTS(txt.lang)
+        tts_order = self.config.get('settings', 'tts_order')
+        self.match = Match(
+            self, self.root.ids.match_screen, player1, player2, show_advantages=adv, tts=tts, tts_order=tts_order, **kwargs
+        )
 
         self.root.ids.screen_manager.transition = WipeTransition()
         self.root.ids.screen_manager.current = 'match'
