@@ -16,10 +16,10 @@
 from kivy.app import App
 from kivy.metrics import dp
 from kivy.properties import BooleanProperty, ColorProperty, ListProperty, NumericProperty, ObjectProperty, StringProperty
-from kivymd.theming import ThemableBehavior
-from kivymd.uix.list import OneLineIconListItem, TwoLineIconListItem, TwoLineListItem, OneLineRightIconListItem
+from kivymd.uix.list import OneLineIconListItem, OneLineRightIconListItem, TwoLineIconListItem, TwoLineListItem
 from kivymd.uix.menu import MDDropdownMenu
 
+from .lang import DEFAULT as DEFAULT_LANG
 from .lang import txt
 
 
@@ -99,7 +99,10 @@ class ComboBehavior(MenuBehavior, SettingsBehavior):
 
     def _get_text(self, value):
         if self.textid:
-            return getattr(txt, self.textid)[value]
+            try:
+                return getattr(txt, self.textid)[value]
+            except (KeyError, IndexError):
+                return txt.get(self.textid, DEFAULT_LANG)[value]
         else:
             return str(value)
 

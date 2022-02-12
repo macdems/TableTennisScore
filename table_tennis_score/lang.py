@@ -58,6 +58,10 @@ class Text(Observable):
         except KeyError:
             return self.strings[DEFAULT].get(string, string)
 
+    def get(self, string, lang=None):
+        if lang is None: lang = self.lang
+        return self.strings[lang][string]
+
     def fbind(self, name, func, args, **kwargs):
         self._observers.append((func, args))
 

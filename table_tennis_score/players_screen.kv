@@ -15,6 +15,7 @@
 
 #:import hex_from_color kivy.utils.get_hex_from_color
 #:import text_colors kivymd.color_definitions.text_colors
+#:import ScrollEffect kivy.effects.scroll.ScrollEffect
 
 #:import players_screen table_tennis_score.players_screen
 
@@ -33,13 +34,13 @@
             title: t.players
 
         MDRelativeLayout:
-            BoxLayout:
-                orientation: 'vertical'
-                width: root.width
-                height: self.parent.height
+            ScrollView:
+                do_scroll_x: False
+                do_scroll_y: True
+                effect_cls: ScrollEffect
                 MDList:
                     id: player_list
-                Widget:
+                    width: root.width
 
             MDFloatingActionButton:
                 icon: 'plus'

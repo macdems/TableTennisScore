@@ -47,6 +47,7 @@ class GameListItem(ThreeLineListItem, TouchBehavior, MenuBehavior):
         sets = []
         finished = value.finished
         total = 65535
+        second_line = ""
         if finished:
             if score1 > score2:
                 player1 = f"[b]{player1}[/b]"
@@ -57,20 +58,17 @@ class GameListItem(ThreeLineListItem, TouchBehavior, MenuBehavior):
             self.text = f"{player1} : {player2}  ({score1}:{score2})"
         else:
             gray = get_hex_from_color(App.get_running_app().theme_cls.secondary_text_color) if gray is None else gray
-            text = f"{player1} : {player2}  "
+            text = f"{player1} : {player2}"
             if score1 is not None:  #  and score2 is not None
-                text += f"[color={gray}]({score1}:{score2} — {txt.match_unfinished})[/color]"
+                text += f"  [color={gray}]({score1}:{score2})[/color]"
                 total = score1 + score2
-            else:
-                text += f"[color={gray}]({txt.match_unfinished})[/color]"
             self.text = text
+            second_line = " — " + txt.match_unfinished
         start = value.start
         if value.end:
             duration = value.end - start
-            duration = f" ({duration.seconds // 60}min {duration.seconds % 60}s)"
-        else:
-            duration = ''
-        self.secondary_text = start.strftime("%Y-%m-%d %H:%M") + duration
+            second_line = f" — {duration.seconds // 60}min {duration.seconds % 60}s" + second_line
+        self.secondary_text = start.strftime("%Y-%m-%d %H:%M") + second_line
         for i, set in enumerate(value.sets):
             p1, p2 = set.points1, set.points2
             if finished or i < total:

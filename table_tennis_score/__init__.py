@@ -25,17 +25,10 @@ from kivymd.app import MDApp
 from kivymd.toast import toast
 from kivymd.uix.button import MDFlatButton
 from kivymd.uix.dialog import MDDialog
-from kivymd.uix.list import OneLineIconListItem
 
-if kivy.utils.platform == 'android':
-    import jnius
-else:
-    jnius = None
-    window_width = Window.size[0]
-    Window.size = window_width, 1.8 * window_width
+from .system import get_system_lang, get_system_theme
 
 from . import model
-from .lang import DEFAULT as DEFAULT_LANG
 from .lang import txt
 from .match import Match
 
@@ -59,16 +52,6 @@ class TableTennisScoreApp(MDApp):
         Window.bind(on_keyboard=self.on_key_press_back)
         self.root.ids.newmatch_screen.ids.newmatch_tab.setup_players()
 
-    def _get_lang(self):
-        if jnius is not None:
-            try:
-                Locale = jnius.autoclass('java.util.Locale')
-                return Locale.getDefault().toString().split('_')[0]
-            except:
-                return DEFAULT_LANG
-        else:
-            return os.environ.get('LANG', DEFAULT_LANG).split('.')[0].split('_')[0]
-
     def load_kv(self, filename=None):
         self.set_lang(self.config.get('settings', 'lang'))
         if filename is None:
@@ -81,11 +64,12 @@ class TableTennisScoreApp(MDApp):
         config.setdefaults('match', {'player1': None, 'player2': None, 'serving': 1, 'sets': 3, 'points': 11})
 
     def set_lang(self, value):
-        if value == 'auto': value = self._get_lang()
+        if value == 'auto': value = get_system_lang()
         txt.set_lang(value)
 
     def set_style(self, value):
-        if value == 'auto': value = 'Light'  #TODO
+        if value == 'auto':
+            value = get_system_theme()
         self.theme_cls.theme_style = value
 
     def _cancel_exiting(self, *args):
@@ -93,14 +77,17 @@ class TableTennisScoreApp(MDApp):
 
     def on_key_press_back(self, window, key, *args):
         if key == 27:
-            if self.root.ids.screen_manager.current == 'match':
+            screen = self.root.ids.screen_manager.current
+            if screen == 'match':
                 self.stop_match()
-            else:
+            elif screen == 'newmatch':
                 if self._exitting:
                     self.stop()
                 else:
                     toast(txt.confirm_exit)
                     self._exitting = Clock.schedule_once(self._cancel_exiting, 4)
+            else:
+                self.root.ids.screen_manager.current = 'newmatch'
 
     def switch_screen(self, name):
         self.root.ids.screen_manager.current = name

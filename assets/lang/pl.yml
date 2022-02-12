@@ -41,7 +41,7 @@ player_color: Kolor
 player_icon: Ikona
 confirm_player_delete: Czy na pewno chcesz usunąć zawodnika {}?
 
-match_unfinished: niedokończone
+match_unfinished: mecz niedokończony
 confirm_match_delete: Czy na pewno chcesz usunąć mecz {}:{}?
 
 settings_lang: Język
@@ -57,5 +57,5 @@ settings_style_options:
 
 settings_rotation_options:
   auto: Automatycznie
-  vertical: Pionowy
-  horizontal: Poziomy
+  portrait: Pionowy
+  landscape: Poziomy

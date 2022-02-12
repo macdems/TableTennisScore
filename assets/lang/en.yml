@@ -42,7 +42,7 @@ player_color: Color
 player_icon: Icon
 confirm_player_delete: Do you really want to delete player {}?
 
-match_unfinished: unfinished
+match_unfinished: match unfinished
 confirm_match_delete: Do you really want to delete match {}:{}?
 
 settings_lang: Language
@@ -58,5 +58,5 @@ settings_style_options:
 
 settings_rotation_options:
   auto: Automatic
-  vertical: Vertical
-  horizontal: Horizontal
+  portrait: Portrait
+  landscape: Landscape

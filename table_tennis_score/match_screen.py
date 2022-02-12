@@ -13,6 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+from kivy.app import App
 from kivy.properties import BooleanProperty, ColorProperty, NumericProperty, StringProperty
 from kivy.uix.behaviors import ButtonBehavior
 from kivy.utils import get_color_from_hex
@@ -21,7 +22,7 @@ from kivymd.uix.behaviors import BackgroundColorBehavior, RectangularRippleBehav
 from kivymd.uix.screen import MDScreen
 
 from .lang import txt
-
+from .system import set_orientation
 
 class ScoreButton(RectangularRippleBehavior, ButtonBehavior, BackgroundColorBehavior):
     player_name = StringProperty()
@@ -55,6 +56,14 @@ class MatchScreen(MDScreen, ThemableBehavior):
         else:
             players.children[0].position = 'right'
             players.children[1].position = 'left'
+
+    def on_enter(self, *args):
+        set_orientation(App.get_running_app().config.get('settings', 'rotation'))
+        super().on_enter(*args)
+
+    def on_pre_leave(self, *args):
+        super().on_pre_leave(*args)
+        set_orientation('portrait')
 
     def on_size(self, instance, size):
         box = self.ids.box
