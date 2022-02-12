@@ -93,7 +93,7 @@ class GameListItem(ThreeLineListItem, TouchBehavior, MenuBehavior):
             self._dialog = MDDialog(
                 text=txt.confirm_match_delete.format(self.data.player1.name, self.data.player2.name),
                 buttons=[
-                    MDFlatButton(text=txt.button_cancel, on_releacase=lambda *args: self._dialog.dismiss()),
+                    MDFlatButton(text=txt.button_cancel, on_release=lambda *args: self._dialog.dismiss()),
                     MDFlatButton(
                         text=txt.button_delete,
                         text_color=App.get_running_app().theme_cls.primary_color,

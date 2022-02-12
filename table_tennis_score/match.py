@@ -42,7 +42,7 @@ class Match:
         self._points = []
         self._sets_history = []
         self._screen.set_score((0, 0), (0, 0))
-        self._say('begin_match')
+        self._say('begin_match', reset=True)
         self._screen.can_undo = False
         if serving:
             self._serving = serving - 1
@@ -66,25 +66,28 @@ class Match:
     def _process_points(self):
         points = [self._points.count(p) for p in (0, 1)]
         serving = self._select_serving()
+        reset_tts_on_win = False
         try:
             if points[0] >= self._last_point and points[1] >= self._last_point:
                 # Tie break
                 delta = points[1] - points[0]
                 if delta <= -2:
+                    reset_tts_on_win = True
                     raise SetOver(0)
                 elif delta >= 2:
+                    reset_tts_on_win = True
                     raise SetOver(1)
                 else:
                     if self._show_advantages:
                         if delta == -1:
                             self._screen.set_score((f'{self._last_point}+', self._last_point))
-                            self._say('advantage', self.players[0].name)
+                            self._say('advantage', self.players[0].name, reset=True)
                         elif delta == 1:
                             self._screen.set_score((self._last_point, f'{self._last_point}+'))
-                            self._say('advantage', self.players[1].name)
+                            self._say('advantage', self.players[1].name, reset=True)
                         else:
                             self._screen.set_score((self._last_point, self._last_point))
-                            self._say('deuce')
+                            self._say('deuce', reset=True)
                     else:
                         self._screen.set_score(points)
                         self._say_score(points, serving)
@@ -102,11 +105,11 @@ class Match:
             self._screen.set_score(sets=sets)
             winner = self.players[set.winner]
             if self._sets.count(set.winner) >= self._match_sets:
-                self._say('wins_match', winner.name)
+                self._say('wins_match', winner.name, reset=reset_tts_on_win)
                 stats = [[sp.count(p) for p in (0, 1)] for sp in self._sets_history]
                 self._app.game_over(winner, sets, stats)
             else:
-                self._say('wins_set', winner.name)
+                self._say('wins_set', winner.name, reset=reset_tts_on_win)
                 self._screen.set_score((0, 0))
                 self._say('change_places')
                 self._say('score', 0, 0)
@@ -153,14 +156,14 @@ class Match:
         sets = [self._sets.count(p) for p in (0, 1)]
         return sets, stats
 
-    def _say_score(self, points, serving):
+    def _say_score(self, points, serving, reset=True):
         if self._tts_order == 'first_serve':
             if self._serving == 1: points = points[1], points[0]
         elif self._tts_order == 'current_serve':
             if serving == 1: points = points[1], points[0]
-        self._say('score', *points)
+        self._say('score', *points, reset=reset)
 
-    def _say(self, what, *args, **kwargs):
-        text = getattr(txt, 'tts_' + what).format(*args, **kwargs)
+    def _say(self, what, *args, reset=False):
+        text = getattr(txt, 'tts_' + what).format(*args)
         if self._tts:
-            self._tts(text)
+            self._tts(text, reset=reset)

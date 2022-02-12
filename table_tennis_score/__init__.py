@@ -55,6 +55,7 @@ class TableTennisScoreApp(MDApp):
 
     def load_kv(self, filename=None):
         self.set_lang(self.config.get('settings', 'lang'))
+        self.set_style(self.config.get('settings', 'style'))
         if filename is None:
             kv_directory = self.kv_directory or os.path.dirname(__file__)
             filename = os.path.join(kv_directory, '__init__.kv')
@@ -87,13 +88,17 @@ class TableTennisScoreApp(MDApp):
 
     def on_key_press_back(self, window, key, *args):
         if key == 27:
+            if self.root.ids.nav_drawer.state == 'open':
+                self.root.ids.nav_drawer.set_state('close')
+                return
             if MenuBehavior.visible_menu is not None:
                 try:
                     MenuBehavior.visible_menu.dismiss()
                 except ReferenceError:
-                    pass
-                MenuBehavior.visible_menu = None
-                return
+                    MenuBehavior.visible_menu = None
+                else:
+                    MenuBehavior.visible_menu = None
+                    return
             screen = self.root.ids.screen_manager.current
             if screen == 'match':
                 self.stop_match()
@@ -108,7 +113,7 @@ class TableTennisScoreApp(MDApp):
 
     def switch_screen(self, name):
         self.root.ids.screen_manager.current = name
-        self.root.ids.nav_drawer.set_state("close")
+        self.root.ids.nav_drawer.set_state('close')
 
     def start_match(self, player1, player2, serving, **kwargs):
         if not isinstance(player1, model.Player):

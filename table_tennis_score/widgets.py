@@ -33,6 +33,7 @@ class IconMenuItem(OneLineIconListItem):
 class MenuBehavior:
     menu_item_class = StringProperty('OneLineListItem')
     menu_item_height = NumericProperty(dp(48))
+    menu_width_mul = NumericProperty(4)
 
     visible_menu = None
 
@@ -71,7 +72,7 @@ class MenuBehavior:
             for item in self.get_menu()
         ]
         if self._menu is None:
-            self._menu = MenuBehavior.DropdownMenu(caller=caller, items=menu_items, width_mult=4)
+            self._menu = MenuBehavior.DropdownMenu(caller=caller, items=menu_items, width_mult=self.menu_width_mul)
         self._menu.open()
 
     def menu_close(self):

@@ -57,6 +57,7 @@ class PlayerCombo(TwoLineIconListItem, MenuBehavior):
         self.menu_open(caller=self.ids.left_icon)
 
     def setup(self, currentid):
+        self._menu = None
         if currentid is not None:
             self._select_player(dbsession.query(Player).get(currentid))
         else:

@@ -39,7 +39,7 @@ if platform == 'android':
         """Return system locale.
 
         Returns:
-            str: Country code
+            str: Country code.
         """
         try:
             return Locale.getDefault().toString()
@@ -47,10 +47,10 @@ if platform == 'android':
             return DEFAULT_LANG
 
     def get_system_theme():
-        """Return current system theme ('Light' or 'Dark')
+        """Return current system theme ('Light' or 'Dark').
 
         Returns:
-            str: 'Light' or 'Dark'
+            str: 'Light' or 'Dark'.
         """
         context = cast('android.content.Context', activity.getApplicationContext())
         mode = context.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK
@@ -83,6 +83,12 @@ if platform == 'android':
             raise ValueError("'mode' must be one of 'auto', 'portrait', or 'landscape'")
 
     class TTS:
+        """Test to Speach system.
+
+        Args:
+            language (str): Language/country code.
+        """
+
         tts = None
 
         def __init__(self, language):
@@ -90,8 +96,14 @@ if platform == 'android':
                 TTS.tts = TextToSpeech(PythonActivity.mActivity, None)
             self.tts.setLanguage(Locale(language))
 
-        def __call__(self, text):
-            self.tts.speak(text, TextToSpeech.QUEUE_ADD, None)
+        def __call__(self, text, reset=False):
+            """Say the phrase.
+
+            Args:
+               text (str): Text to pronounce.
+               reset (bool, optional): If True, the speech in progress is interrupted. Defaults to False.
+            """
+            self.tts.speak(text, TextToSpeech.QUEUE_FLUSH if reset else TextToSpeech.QUEUE_ADD, None)
 
 else:
     window_width = Window.size[0]
@@ -101,7 +113,7 @@ else:
         return os.environ.get('LANG', DEFAULT_LANG).split('.')[0]
 
     def get_system_theme():
-        return os.environ.get('_POWERLEVEL9K_COLOR_SCHEME', 'light').title()
+        return os.environ.get('KIVY_COLOR_STYLE', 'Light')
 
     def set_orientation(mode, user=True):
         if mode in ('portrait', 'auto'):
@@ -116,5 +128,5 @@ else:
         def __init__(self, country):
             self.country = country
 
-        def __call__(self, text):
+        def __call__(self, text, reset=False):
             print(text)
