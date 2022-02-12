@@ -22,7 +22,6 @@ from kivymd.uix.behaviors import RectangularRippleBehavior, SpecificBackgroundCo
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.label import MDLabel
 from kivymd.uix.list import TwoLineRightIconListItem, TwoLineListItem
-from kivymd.uix.menu import MDDropdownMenu
 from kivymd.uix.screen import MDScreen
 
 from .lang import txt

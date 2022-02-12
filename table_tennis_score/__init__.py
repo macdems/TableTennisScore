@@ -31,6 +31,8 @@ from .system import get_system_lang, get_system_theme
 from . import model
 from .lang import txt
 from .match import Match
+from .widgets import MenuBehavior
+
 
 Config.set('kivy', 'exit_on_escape', '0')
 
@@ -77,6 +79,13 @@ class TableTennisScoreApp(MDApp):
 
     def on_key_press_back(self, window, key, *args):
         if key == 27:
+            if MenuBehavior.visible_menu is not None:
+                try:
+                    MenuBehavior.visible_menu.dismiss()
+                except ReferenceError:
+                    pass
+                MenuBehavior.visible_menu = None
+                return
             screen = self.root.ids.screen_manager.current
             if screen == 'match':
                 self.stop_match()

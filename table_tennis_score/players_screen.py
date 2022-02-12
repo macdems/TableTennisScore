@@ -106,7 +106,6 @@ class PlayerItemInteractive(PlayerItem, TouchBehavior, MenuBehavior):
         app.root.ids.players_screen.populate_player_list()
 
     def _edit(self):
-        self._menu.dismiss()
         App.get_running_app().root.ids.players_screen.show_dialog(self.data)
 
 

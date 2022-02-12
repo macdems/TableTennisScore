@@ -13,6 +13,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+import weakref
+
 from kivy.app import App
 from kivy.metrics import dp
 from kivy.properties import BooleanProperty, ColorProperty, ListProperty, NumericProperty, ObjectProperty, StringProperty
@@ -31,6 +33,18 @@ class IconMenuItem(OneLineIconListItem):
 class MenuBehavior:
     menu_item_class = StringProperty('OneLineListItem')
     menu_item_height = NumericProperty(dp(48))
+
+    visible_menu = None
+
+    class DropdownMenu(MDDropdownMenu):
+
+        def open(self):
+            super().open()
+            MenuBehavior.visible_menu = weakref.proxy(self)
+
+        def on_dismiss(self):
+            super().on_dismiss()
+            MenuBehavior.visible_menu = None
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -57,7 +71,7 @@ class MenuBehavior:
             for item in self.get_menu()
         ]
         if self._menu is None:
-            self._menu = MDDropdownMenu(caller=caller, items=menu_items, width_mult=4)
+            self._menu = MenuBehavior.DropdownMenu(caller=caller, items=menu_items, width_mult=4)
         self._menu.open()
 
     def menu_close(self):
