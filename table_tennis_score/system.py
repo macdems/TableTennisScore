@@ -22,6 +22,7 @@ from .lang import DEFAULT as DEFAULT_LANG
 
 if platform == 'android':
     from jnius import autoclass, cast
+    from android.runnable import run_on_ui_thread
 
     ActivityInfo = autoclass('android.content.pm.ActivityInfo')
     Locale = autoclass('java.util.Locale')
@@ -30,10 +31,10 @@ if platform == 'android':
 
     if 'PYTHON_SERVICE_ARGUMENT' in os.environ:
         PythonService = autoclass('org.kivy.android.PythonService')
-        activity = PythonService.mService
+        currentActivity = PythonService.mService
     else:
         PythonActivity = autoclass('org.kivy.android.PythonActivity')
-        activity = PythonActivity.mActivity
+        currentActivity = PythonActivity.mActivity
 
     def get_system_lang():
         """Return system locale.
@@ -52,7 +53,7 @@ if platform == 'android':
         Returns:
             str: 'Light' or 'Dark'.
         """
-        context = cast('android.content.Context', activity.getApplicationContext())
+        context = cast('android.content.Context', currentActivity.getApplicationContext())
         mode = context.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK
         return 'Dark' if mode == Configuration.UI_MODE_NIGHT_YES else 'Light'
 
@@ -66,21 +67,31 @@ if platform == 'android':
         """
         if mode == 'auto':
             if user:
-                activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER)
+                currentActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER)
             else:
-                activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR)
+                currentActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR)
         elif mode == 'portrait':
             if user:
-                activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER_PORTRAIT)
+                currentActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER_PORTRAIT)
             else:
-                activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
+                currentActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
         elif mode == 'landscape':
             if user:
-                activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER_LANDSCAPE)
+                currentActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER_LANDSCAPE)
             else:
-                activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE)
+                currentActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE)
         else:
             raise ValueError("'mode' must be one of 'auto', 'portrait', or 'landscape'")
+
+    @run_on_ui_thread
+    def lock_screen(lock):
+        """Lock the screen always on
+
+        Args:
+            lock (bool): If True, lock the screen. Release the lock if False.
+        """
+        view = currentActivity.getWindow().getDecorView()
+        view.setKeepScreenOn(lock)
 
     class TTS:
         """Test to Speach system.
@@ -122,6 +133,9 @@ else:
             Window.size = 1.8 * window_width, window_width
         else:
             raise ValueError("'mode' must be one of 'auto', 'portrait', or 'landscape'")
+
+    def lock_screen(lock):
+        return
 
     class TTS:
 

@@ -13,6 +13,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+from kivy.properties import StringProperty
+from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.screen import MDScreen
 
 from .widgets import ComboListItem
@@ -22,6 +24,10 @@ class SettingsComboListItem(ComboListItem):
 
     def on_release(self):
         self.menu_open(self.ids.left)
+
+
+class SectionLabel(MDBoxLayout):
+    text = StringProperty()
 
 
 class SettingsScreen(MDScreen):

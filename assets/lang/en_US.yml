@@ -47,7 +47,8 @@ settings_group_interface: Interface Settings
 settings_lang: Language
 settings_style: Dark Mode
 settings_rotation: Match Screen Rotation
-settings_group_match: Match Settings
+settings_screen_on: Keep Screen On During Match
+settings_group_match: Game Settings
 settings_tts: Voice Output
 settings_advantages: Show Advantages
 settings_tts_order: Voice Score Report Order

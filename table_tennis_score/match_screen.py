@@ -22,7 +22,7 @@ from kivymd.uix.behaviors import BackgroundColorBehavior, RectangularRippleBehav
 from kivymd.uix.screen import MDScreen
 
 from .lang import txt
-from .system import set_orientation
+from .system import set_orientation, lock_screen
 
 class ScoreButton(RectangularRippleBehavior, ButtonBehavior, BackgroundColorBehavior):
     player_name = StringProperty()
@@ -58,11 +58,16 @@ class MatchScreen(MDScreen, ThemableBehavior):
             players.children[1].position = 'left'
 
     def on_enter(self, *args):
-        set_orientation(App.get_running_app().config.get('settings', 'rotation'))
+        config = App.get_running_app().config
+        set_orientation(config.get('settings', 'rotation'))
+        screen_on = config.get('settings', 'screen_on')
+        screen_on = screen_on == 'True' if isinstance(screen_on, str) else screen_on
+        if screen_on: lock_screen(True)
         super().on_enter(*args)
 
     def on_pre_leave(self, *args):
         super().on_pre_leave(*args)
+        lock_screen(False)
         set_orientation('portrait')
 
     def on_size(self, instance, size):

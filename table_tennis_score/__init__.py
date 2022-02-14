@@ -67,6 +67,7 @@ class TableTennisScoreApp(MDApp):
                 'lang': 'auto',
                 'style': 'auto',
                 'rotation': 'auto',
+                'screen_on': True,
                 'tts': True,
                 'tts_order': 'player_order',
                 'advantages': True

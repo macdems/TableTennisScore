@@ -13,12 +13,16 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+#:import ScrollEffect kivy.effects.scroll.ScrollEffect
+
 #:import settings_screen table_tennis_score.settings_screen
 
 
 <SettingsComboListItem>:
     text_prop: 'secondary_text'
     menu_width_mul: 6
+    height: '64dp'
+    size_hint_y: None
     Widget:
         id: left
         size_hint: None, None
@@ -27,60 +31,79 @@
         size: 0, 0
 
 
+<SectionLabel>:
+    canvas:
+        Color:
+            rgba:
+                app.theme_cls.divider_color
+        Line:
+            points: (root.x, root.y, root.x+self.width, root.y)
+    padding: '16dp', '8dp', '16dp', '8dp'
+    size_hint_y: None
+    MDLabel:
+        text: root.text
+        font_style: 'Button'
+        theme_text_color: 'Custom'
+        text_color: app.theme_cls.primary_color
+        left: '16dp'
+
+
 <SettingsScreen>:
     MDBoxLayout:
         orientation: 'vertical'
         MainToolbar:
             title: t.settings
 
-        # MDLabel:
-        #     text: t.settings_group_interface
-        #     font_style: 'Button'
-        #     theme_text_color: 'Custom'
-        #     text_color: app.theme_cls.primary_color
-        SettingsComboListItem:
-            section: 'settings'
-            name: 'lang'
-            text: t.settings_lang
-            items: t.available_langs
-            textid: 'available_langs'
-            value: 'auto'
-            on_value:
-                app.set_lang(args[1])
-        SettingsComboListItem:
-            section: 'settings'
-            name: 'style'
-            text: t.settings_style
-            textid: 'settings_style_options'
-            items: ['auto', 'Light', 'Dark']
-            value: 'auto'
-            on_value:
-                app.set_style(args[1])
-        SettingsComboListItem:
-            section: 'settings'
-            name: 'rotation'
-            text: t.settings_rotation
-            textid: 'settings_rotation_options'
-            items: ['auto', 'portrait', 'landscape']
-            value: 'auto'
-        # MDLabel:
-        #     text: t.settings_group_match
-        #     font_style: 'Button'
-        #     theme_text_color: 'Custom'
-        #     text_color: app.theme_cls.primary_color
-        BooleanListItem:
-            section: 'settings'
-            name: 'tts'
-            text: t.settings_tts
-        SettingsComboListItem:
-            section: 'settings'
-            name: 'tts_order'
-            text: t.settings_tts_order
-            textid: 'settings_tts_order_options'
-            items: ['player_order', 'first_serve', 'current_serve']
-            value: 'player_order'
-        BooleanListItem:
-            section: 'settings'
-            name: 'advantages'
-            text: t.settings_advantages
-        Widget:
+        ScrollView:
+            do_scroll_x: False
+            do_scroll_y: True
+            effect_cls: ScrollEffect
+            MDList:
+                SectionLabel:
+                    text: t.settings_group_interface
+                SettingsComboListItem:
+                    section: 'settings'
+                    name: 'lang'
+                    text: t.settings_lang
+                    items: t.available_langs
+                    textid: 'available_langs'
+                    # value: 'auto'
+                    on_value:
+                        app.set_lang(args[1])
+                SettingsComboListItem:
+                    section: 'settings'
+                    name: 'style'
+                    text: t.settings_style
+                    textid: 'settings_style_options'
+                    items: ['auto', 'Light', 'Dark']
+                    # value: 'auto'
+                    on_value:
+                        app.set_style(args[1])
+                SettingsComboListItem:
+                    section: 'settings'
+                    name: 'rotation'
+                    text: t.settings_rotation
+                    textid: 'settings_rotation_options'
+                    items: ['auto', 'portrait', 'landscape']
+                    # value: 'auto'
+                BooleanListItem:
+                    section: 'settings'
+                    name: 'screen_on'
+                    text: t.settings_screen_on
+                SectionLabel:
+                    text: t.settings_group_match
+                BooleanListItem:
+                    section: 'settings'
+                    name: 'tts'
+                    text: t.settings_tts
+                SettingsComboListItem:
+                    section: 'settings'
+                    name: 'tts_order'
+                    text: t.settings_tts_order
+                    textid: 'settings_tts_order_options'
+                    items: ['player_order', 'first_serve', 'current_serve']
+                    # value: 'player_order'
+                BooleanListItem:
+                    section: 'settings'
+                    name: 'advantages'
+                    text: t.settings_advantages

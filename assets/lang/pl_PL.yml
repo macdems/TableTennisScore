@@ -42,9 +42,12 @@ confirm_player_delete: Czy na pewno chcesz usunąć zawodnika {}?
 match_unfinished: mecz niedokończony
 confirm_match_delete: Czy na pewno chcesz usunąć mecz {}:{}?
 
+settings_group_interface: Ustawienia interfejsu
 settings_lang: Język
 settings_style: Styl ciemny
 settings_rotation: Obrót ekranu poczas meczu
+settings_screen_on: Nie wygaszaj ekranu podczas meczu
+settings_group_match: Ustawienia gry
 settings_tts: Komunikaty głosowe
 settings_advantages: Pokaż przewagi
 settings_tts_order: Kolejność podawania wyników
