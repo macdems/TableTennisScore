@@ -1,0 +1,13 @@
+Yet another scoring app for table tennis. This is designed for amateur play.
+
+Features
+
+• Define players with custom colors and icons.
+• Select number of sets and points per set for each game.
+• Big legible score screen; just tap a player area to score a point.
+• Serving player tracking.
+• Undo butto.
+• Easy flip player sides.
+• Both horizontal and verical game screen alignment.
+• Voice feedback.
+• Records games history.

@@ -1,0 +1,13 @@
+Kolejna aplikacja do liczenia punktów w tenisie stołowym. Ta jest przeznaczone do gry amatorskiej.
+
+Cechy
+
+• Zdefiniuj graczy i przypisz im kolory oraz ikony.
+• Wybierz liczbę setów i punktów w jednym secie w każdym meczu.
+• Duży czytelny ekran wyników; wystarczy dotknąć obszaru gracza, aby zaznaczyć zdobycie punktu.
+• Śledzenie który gracz powinien serwuje.
+• Możliwość cofnięcia przyznania punktu.
+• Łatwe zamiania graczy miejscami.
+• Ekranu gry zarówno może mieć układ poziomy i pionowy.
+• Komunikaty głosowe.
+• Rejestracja historii gier.
