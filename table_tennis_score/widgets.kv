@@ -30,8 +30,7 @@
         icon: root.icon
         text_color: root.icon_color
         theme_text_color: 'Custom'
-        on_release:
-            root.on_release()
+        on_release: root.on_release(args)
 
 
 <ComboListItem>:
@@ -48,6 +47,7 @@
         icon: root.icon
         theme_text_color: 'Custom'
         text_color: root.icon_color
+        on_release: root.on_release(*args)
 
 
 <BooleanListItemCheckbox@MDCheckbox+IRightBodyTouch>:

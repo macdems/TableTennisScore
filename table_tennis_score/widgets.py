@@ -145,7 +145,7 @@ class IconComboListItem(TwoLineIconListItem, ComboBehavior):
     icon = StringProperty()
     icon_color = ColorProperty()
 
-    def on_release(self):
+    def on_release(self, *args):
         self.menu_open(caller=self.ids.left_icon)
 
 
