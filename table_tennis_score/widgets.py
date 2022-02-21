@@ -89,12 +89,12 @@ class SettingsBehavior:
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self._init_value()
+        self.reset_value()
 
     def on_parent(self, instance, parent):
-        parent.bind(on_kv_post=self._init_value)
+        parent.bind(on_kv_post=self.reset_value)
 
-    def _init_value(self, *args, **kwargs):
+    def reset_value(self, *args, **kwargs):
         if self.section and self.name:
             self.value = App.get_running_app().config.get(self.section, self.name)
 
@@ -152,7 +152,7 @@ class IconComboListItem(TwoLineIconListItem, ComboBehavior):
 class BooleanListItem(OneLineRightIconListItem, SettingsBehavior):
     value = BooleanProperty()
 
-    def _init_value(self, *args, **kwargs):
+    def reset_value(self, *args, **kwargs):
         if self.section and self.name:
             value = App.get_running_app().config.get(self.section, self.name)
             self.value = value == 'True' if isinstance(value, str) else value

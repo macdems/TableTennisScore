@@ -14,7 +14,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 from .lang import txt
-
+from .system import TTS
 
 class SetOver(Exception):
 
@@ -25,7 +25,7 @@ class SetOver(Exception):
 class Match:
 
     def __init__(
-        self, app, screen, player1, player2, sets=3, set_points=11, show_advantages=True, tts=None, tts_order='player_order'
+        self, app, screen, player1, player2, sets=3, set_points=11, show_advantages=True, tts=False, tts_order='player_order'
     ):
         self._app = app
         self._screen = screen
@@ -33,8 +33,9 @@ class Match:
         self._match_sets = sets
         self._last_point = set_points - 1
         self._show_advantages = show_advantages
-        self._tts = tts
+        self.tts = None
         self._tts_order = tts_order
+        self.set_tts(tts)
         screen.set_players(player1, player2)
 
     def start(self, serving):
@@ -52,6 +53,12 @@ class Match:
             self._serving = None
             self._screen.set_serving(None)
             self._say('serve_play')
+
+    def set_tts(self, tts):
+        if tts and self.tts is None:
+            self.tts = TTS(txt.lang)
+        elif not tts and self.tts is not None:
+            self.tts = None
 
     def _select_serving(self):
         points = len(self._points)
@@ -165,5 +172,5 @@ class Match:
 
     def _say(self, what, *args, reset=False):
         text = getattr(txt, 'tts_' + what).format(*args)
-        if self._tts:
-            self._tts(text, reset=reset)
+        if self.tts:
+            self.tts(text, reset=reset)

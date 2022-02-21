@@ -26,7 +26,7 @@ from kivymd.toast import toast
 from kivymd.uix.button import MDFlatButton
 from kivymd.uix.dialog import MDDialog
 
-from .system import get_system_lang, get_system_theme, TTS
+from .system import get_system_lang, get_system_theme
 
 from . import model
 from .lang import txt
@@ -52,6 +52,9 @@ class TableTennisScoreApp(MDApp):
         super().build()
         Window.bind(on_keyboard=self.on_key_press_back)
         self.root.ids.newmatch_screen.ids.newmatch_tab.setup_players()
+        players_screen = self.root.ids.players_screen
+        players_screen.bind(on_players_changed=self.root.ids.newmatch_screen.on_players_changed)
+        players_screen.bind(on_players_changed=self.root.ids.history_screen.on_players_changed)
 
     def load_kv(self, filename=None):
         self.set_lang(self.config.get('settings', 'lang'))
@@ -131,8 +134,6 @@ class TableTennisScoreApp(MDApp):
         adv = adv == 'True' if isinstance(adv, str) else adv
         tts = self.config.get('settings', 'tts')
         tts = tts == 'True' if isinstance(tts, str) else tts
-        if tts:
-            tts = TTS(txt.lang)
         tts_order = self.config.get('settings', 'tts_order')
         self.match = Match(
             self, self.root.ids.match_screen, player1, player2, show_advantages=adv, tts=tts, tts_order=tts_order, **kwargs
@@ -141,6 +142,14 @@ class TableTennisScoreApp(MDApp):
         self.root.ids.screen_manager.transition = WipeTransition()
         self.root.ids.screen_manager.current = 'match'
         self.match.start(serving)
+
+    def toggle_tts(self):
+        new_val = self.match.tts is None
+        self.match.set_tts(new_val)
+        self.config.set('settings', 'tts', new_val)
+        self.config.write()
+        self.root.ids.settings_screen.ids.settings_tts.reset_value()
+        return new_val
 
     def game_over(self, winner, score, stats):
         self._matchdb.end_match(score, stats)

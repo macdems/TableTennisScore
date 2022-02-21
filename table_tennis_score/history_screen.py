@@ -124,3 +124,7 @@ class HistoryScreen(MDScreen):
             history.add_widget(item, self.offset)
             count += 1
         self.offset += count
+
+    def on_players_changed(self, *args):
+        self.offset = 0
+        self.ids.history.clear_widgets()

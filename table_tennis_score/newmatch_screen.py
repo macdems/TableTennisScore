@@ -93,10 +93,16 @@ class PlayerCombo(TwoLineIconListItem, MenuBehavior):
 
 class NewMatchTab(MDBoxLayout, MDTabsBase):
 
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.outdated_players = True
+
     def setup_players(self, *args, **kwargs):
-        config = App.get_running_app().config
-        self.ids.player_one.setup(config.get('match', 'player1'))
-        self.ids.player_two.setup(config.get('match', 'player2'))
+        if self.outdated_players:
+            config = App.get_running_app().config
+            self.ids.player_one.setup(config.get('match', 'player1'))
+            self.ids.player_two.setup(config.get('match', 'player2'))
+            self.outdated_players = False
 
 
 class NewMatchScreen(MDScreen, ThemableBehavior):
@@ -110,3 +116,6 @@ class NewMatchScreen(MDScreen, ThemableBehavior):
         sets = int(newmatchdetails_tab.ids.sets.value)
         points = int(newmatchdetails_tab.ids.points.value)
         App.get_running_app().start_match(player1, player2, serving, sets=sets, set_points=points)
+
+    def on_players_changed(self, *args):
+        self.ids.newmatch_tab.outdated_players = True

@@ -127,11 +127,11 @@ else:
         return os.environ.get('KIVY_COLOR_STYLE', 'Light')
 
     def set_orientation(mode, user=True):
-        if mode in ('portrait', 'auto'):
+        if mode == 'portrait':
             Window.size = window_width, 1.8 * window_width
         elif mode == 'landscape':
             Window.size = 1.8 * window_width, window_width
-        else:
+        elif mode != 'auto':
             raise ValueError("'mode' must be one of 'auto', 'portrait', or 'landscape'")
 
     def lock_screen(lock):

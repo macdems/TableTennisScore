@@ -85,6 +85,8 @@
 
 
 <MatchScreen>:
+    on_pre_enter:
+        tts_button.icon = 'volume-high' if app.match.tts is not None else 'volume-off'
     BoxLayout:
         orientation: 'vertical'
         id: box
@@ -132,6 +134,12 @@
                 on_release:
                     players.children = players.children[::-1]
                     root._adjust_players_position()
+            Widget:
+            SmallMatchButton:
+                id: tts_button
+                icon: 'volume-high'
+                on_release:
+                    self.icon = 'volume-high' if app.toggle_tts() else 'volume-off'
             Widget:
             SmallMatchButton:
                 icon: 'stop'

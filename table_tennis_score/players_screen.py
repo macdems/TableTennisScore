@@ -116,6 +116,7 @@ class PlayerEditBox(BoxLayout):
 class PlayersScreen(MDScreen):
 
     def __init__(self, **kwargs):
+        self.register_event_type('on_players_changed')
         super().__init__(**kwargs)
         self._dialog = None
         Clock.schedule_once(lambda *args: self.populate_player_list())
@@ -125,6 +126,10 @@ class PlayersScreen(MDScreen):
         player_list.clear_widgets()
         for player in Player.get_all():
             player_list.add_widget(PlayerItemInteractive(data=player))
+        self.dispatch('on_players_changed')
+
+    def on_players_changed(self, *args):
+        pass
 
     def show_dialog(self, player=None):
         app = App.get_running_app()
