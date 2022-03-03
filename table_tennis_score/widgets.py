@@ -58,7 +58,7 @@ class MenuBehavior:
     #yapf: disable
     def _make_callback(self, item):
         callback = item['callback']
-        def action():
+        def action(*args):
             self._menu.dismiss()
             callback()
         return action
@@ -137,7 +137,7 @@ class ComboBehavior(MenuBehavior, SettingsBehavior):
 
 class ComboListItem(TwoLineListItem, ComboBehavior):
 
-    def on_release(self):
+    def on_release(self, *args):
         self.menu_open()
 
 
