@@ -1,4 +1,4 @@
-Kolejna aplikacja do liczenia punktów w tenisie stołowym. Ta jest przeznaczone do gry amatorskiej.
+Jeszcze jedna aplikacja do liczenia punktów w tenisie stołowym. Ta jest przeznaczona do gry amatorskiej.
 
 Cechy
 
